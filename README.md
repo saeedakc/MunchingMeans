@@ -37,7 +37,7 @@ https://observablehq.com/@d3/bivariate-choropleth Bivariate Chloropleth to show 
 
 
 
-## Sources of Inspiration:
+Sources of Inspiration:
 
 https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/ (Income and access to grocery stores)
 
