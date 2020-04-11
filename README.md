@@ -11,6 +11,8 @@ Hypothesis: There is a correlation between the consumption of healthy foods and 
 
 We will determine this correlation by analyzing the relationship between consumption, food type, and income levels. We will generate an interactive map that allows the user to select various objects such as different food types and income levels and in return, will display the consumption. We will showcase a map that displays the distance between low-income households and their accessibility to grocery stores within a given area. In addition, by measuring household income by commodity consumption we can gather a sound conclusion to either reject or accept our hypothesis. 
 
+
+
 Links to Our Data Sets:
 
 Commodity Consumption Table: https://gtatldatapt12-gde6202.slack.com/files/UQRF82EDV/F0127AA5T7A/commodityconsumption_table3__1_.xls
@@ -23,6 +25,8 @@ BONUS → Atlas Data on Food Accessibility Research: https://www.ers.usda.gov/da
 
 BONUS → Atlas DataSet: https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data/
 
+
+
 Possible D3.js libraries:
 
 https://observablehq.com/@d3/density-contours Density Contours show complex relationships, potentially for Food Desert information.
@@ -31,7 +35,9 @@ https://observablehq.com/@d3/radial-stacked-bar-chart Radial Bar Chart to show s
 
 https://observablehq.com/@d3/bivariate-choropleth Bivariate Chloropleth to show relationship between two conditions (income on one axis and obesity? Nutrition? On the other)
 
-Sources of Inspiration:
+
+
+## Sources of Inspiration:
 
 https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/ (Income and access to grocery stores)
 
