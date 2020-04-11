@@ -6,29 +6,17 @@ Kaleah | KFrench | French
 Enjoli | enjbaez | Baez
 Chelsea | chtho3 | Thompson
 
-Technical Requirements:
-Your visualization must include a Python Flask–powered RESTful API, HTML/CSS, * JavaScript, and at least one database (SQL, MongoDB, SQLite, etc.).
-Your project should fall into one of the below four tracks:
-*A custom “creative” D3.js project (i.e., a nonstandard graph or chart)
-*A combination of web scraping and Leaflet or Plotly
-*A dashboard page with multiple charts that update from the same data
-*A “thick” server that performs multiple manipulations on data in a database prior to   visualization (must be approved)
-Your project should include at least one JS library that we did not cover.
-Your project must be powered by a data set with at least 100 records.
-Your project must include some level of user-driven interaction (e.g., menus, dropdowns, textboxes).
-Your final visualization should ideally include at least three views.
+Proposal:
+Hypothesis: There is a correlation between the consumption of healthy foods and the income level of households across the United States. 
 
-
-
-
+We will determine this correlation by analyzing the relationship between consumption, food type, and income levels. We will generate an interactive map that allows the user to select various objects such as different food types and income levels and in return, will display the consumption. We will showcase a map that displays the distance between low-income households and their accessibility to grocery stores within a given area. In addition, by measuring household income by commodity consumption we can gather a sound conclusion to either reject or accept our hypothesis. 
 
 Links to Our Data Sets:
-BONUS → Atlas Data on Food Accessibility Research: https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/
-BONUS → Atlas DataSet: https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data/
 Commodity Consumption Table: https://gtatldatapt12-gde6202.slack.com/files/UQRF82EDV/F0127AA5T7A/commodityconsumption_table3__1_.xls
 Food Table: https://gtatldatapt12-gde6202.slack.com/files/UQRF82EDV/F011M519M35/food_table1__1_.xls
 Median Income Spreadsheet: https://gtatldatapt12-gde6202.slack.com/files/UQRF82EDV/F011WTCRNPK/median_income_by_state.xls
-
+BONUS → Atlas Data on Food Accessibility Research: https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/
+BONUS → Atlas DataSet: https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data/
 
 Possible D3.js libraries:
 https://observablehq.com/@d3/density-contours Density Contours show complex relationships, potentially for Food Desert information.
