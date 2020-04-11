@@ -13,7 +13,7 @@ We will determine this correlation by analyzing the relationship between consump
 
 
 
-Links to Our Data Sets:
+# Links to Our Data Sets:
 
 Commodity Consumption Table: https://gtatldatapt12-gde6202.slack.com/files/UQRF82EDV/F0127AA5T7A/commodityconsumption_table3__1_.xls
 
@@ -27,7 +27,7 @@ BONUS → Atlas DataSet: https://www.ers.usda.gov/data-products/food-access-rese
 
 
 
-Possible D3.js libraries:
+# Possible D3.js libraries:
 
 https://observablehq.com/@d3/density-contours Density Contours show complex relationships, potentially for Food Desert information.
 
@@ -37,7 +37,7 @@ https://observablehq.com/@d3/bivariate-choropleth Bivariate Chloropleth to show 
 
 
 
-Sources of Inspiration:
+# Sources of Inspiration:
 
 https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/ (Income and access to grocery stores)
 
