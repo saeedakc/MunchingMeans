@@ -29,7 +29,7 @@ BONUS → Atlas DataSet: https://www.ers.usda.gov/data-products/food-access-rese
 
 # Possible D3.js libraries:
 
-https://observablehq.com/@d3/density-contours Density Contours show complex relationships, potentially for Food Desert information.
+https://observablehq.com/@d3/diverging-stacked-bar-chart Diverging Stacked Bar Charts to show relationships between food groups.
 
 https://observablehq.com/@d3/radial-stacked-bar-chart Radial Bar Chart to show specific food type consumption (versus some static category, like income?)
 
