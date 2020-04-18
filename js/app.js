@@ -1,3 +1,9 @@
+//connect from flask
+
+var incomeData =
+d3.json("flask_url").then(function(data) {
+  return data;
+});
 
 
 //Initial choropleth code from Ch17-Day02-Act-04
@@ -175,9 +181,37 @@ d3 = require("d3@5")
 d3.select("map").append(choroChart());
 
 // Reference the button actions (change in data)
-d3.json("flask_url").then(function(data) {
-  return data;
-});
+// On change to the DOM, call getData()
+d3.selectAll("#selDataset").on("change", getData);
+
+// Function called by DOM changes
+function getData() {
+  var dropdownMenu = d3.select("#selDataset");
+  // Assign the value of the dropdown menu option to a variable
+  var dataset = dropdownMenu.property("value");
+  // Initialize an empty array for the country's data
+  var data = [];
+
+  if (dataset == 'bivar') {
+      data = bothData;
+  }
+  else if (dataset == 'income') {
+      data = incomeData;
+  }
+  else if (dataset == 'food') {
+      data = foodData;
+  }
+  // Call function to update the chart
+  updateChoro(data);
+}
+
+// Update the restyled plot's values
+function updateChoro(newdata) {
+  Plotly.restyle("pie", "values", [newdata]);
+}
+
+init();
+
 
 // Change the map to reflect the new map data
 
