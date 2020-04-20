@@ -7,33 +7,54 @@ d3.json("flask_url").then(function(data) {
 
 
 //Initial choropleth code from Ch17-Day02-Act-04
-// Creating map object
-var myMap = L.map("map", {
-  center: [34.0522, -118.2437],
-  zoom: 8
-});
 
-// Adding tile layer
-L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+// Define streetmap and darkmap layers
+var satelitemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
   attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
   maxZoom: 18,
-  id: "mapbox.streets",
+  id: "mapbox.streets-basic",
   accessToken: API_KEY
-}).addTo(myMap);
+})
 
-// Load in geojson data
-var geoData = "static/data/Median_Household_Income_2016.geojson";
+var streetMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+  maxZoom: 18,
+  id: "mapbox.dark",
+  accessToken: API_KEY
+})
 
-var geojson;
+  // Define a baseMaps object to hold our base layers
+  var baseMaps = {"Satelite Map": satelitemap,
+  "Dark Map": streetMap};
+
+  // Create overlay object to hold our overlay layer
+  var overlayMaps = {
+    Earthquakes: earthquakes,
+    TechtonicPlates: techPlates
+  };
+
+  // Create our map, giving it the streetmap and earthquakes layers to display on load
+  var myMap = L.map("map", {
+    center: [37.09, -95.71],
+    zoom: 4,
+    layers: [satelitemap, earthquakes]
+  });
+
+  // Create a layer control
+  // Pass in our baseMaps and overlayMaps
+  // Add the layer control to the map
+  L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false
+  }).addTo(myMap);
 
 // Grab data with d3
-d3.json(geoData, function(data) {
+d3.json(incomeData, function(data) {
 
   // Create a new choropleth layer
   geojson = L.choropleth(data, {
 
     // Define what  property in the features to use
-    valueProperty: "MHI2016",
+    valueProperty: "xxx",
 
     // Set color scale
     scale: ["#ffffb2", "#b10026"],
@@ -56,6 +77,31 @@ d3.json(geoData, function(data) {
         "$" + feature.properties.MHI2016);
     }
   }).addTo(myMap);
+
+  function createFeatures(earthquakeData) {
+
+    function onEachFeature(feature, layer) {
+      layer.bindPopup("<h3>" + feature.properties.place +
+        "</h3><hr><p>" + new Date(feature.properties.time) + "</p><p>Magnitude: " + 
+        feature.properties.mag + "</p>")}
+  
+    // Define a function we want to run once for each feature in the features array
+    // Give each feature a popup describing the place and time of the earthquake
+    var earthquakes = L.geoJSON(earthquakeData, {
+      
+    //map the description for each point
+    onEachFeature : onEachFeature,
+    // map the marker color and size
+    pointToLayer : function(feature, latlng) {
+      return L.circleMarker(latlng,
+        {radius: circleSize(feature.properties.mag),
+        fillColor: circleColor(feature.properties.mag),
+        fillOpacity: 0.75,
+        stroke: false,
+        bubblingMouseEvent: true}
+        );
+      }
+    });
 
   // Set up the legend
   var legend = L.control({ position: "bottomright" });
@@ -86,6 +132,11 @@ d3.json(geoData, function(data) {
   legend.addTo(myMap);
 
 });
+
+
+// --------------------------------------------------------
+// Above is useable code; below is copied code from D3.js
+// --------------------------------------------------------
 
 
 // Build initialized map (interactive)
