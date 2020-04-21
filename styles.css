@@ -1,21 +1,11 @@
-h1 {
-    font-family: "Lucida Handwriting", cursive, sans-serif;
-    
-}
+h1{font-family: "Lucida Handwriting", cursive, sans-serif;}
 
-h2 {
-    
-}
+header{background-color: grey;}
 
-h3 {
-    /* Start with making basic adjustments to our headers */     
-}
-
-h4 {
-
-}
-body { 
-    background-image: url(C:\Users\Kareem\Pictures\Food Insecurity.jpg);
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-}
+.navbar{ 
+    border: 1px solid #ccc;
+    border-width: 1px 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;}
