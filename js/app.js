@@ -1,12 +1,49 @@
-//connect from flask
+// state boundaries geojson
+var stateURL = "../data/states.json"
 
-var incomeData =
-d3.json("flask_url").then(function(data) {
-  return data;
+var myMap = L.map("map", {
+  center: [34.0522, -118.2437],
+  zoom: 8
 });
 
+d3.json(stateURL, function(error, stateData) {
+  if (error) throw error;
+  //console.log(stateData.features);
 
-//Initial choropleth code from Ch17-Day02-Act-04
+    // Once we get a response, send the data.features object to the createFeatures function
+    stateFeatures(stateData.features);
+  });
+
+  function stateFeatures(stateData) {
+
+    function onEachFeature(feature, layer) {
+      layer.bindPopup("<h3>" + feature.properties.NAME + "</h3>")
+    }
+
+var statelines = L.geoJson(stateData, {
+  onEachFeature: onEachFeature,
+  pointToLayer : function(latlng) {
+    return L.polygon(features.geometry.coordinates);
+  }
+});
+createMap(statelines);
+
+
+//connect from flask
+function drawBoundaries(points) {
+  var boundaryLayer = points.target;
+  info.update(boundaryLayer.feature.properties);
+
+  layer.setStyle({
+    weight: 2,
+    color: 'black',
+    fillOpacity: 0.75
+  });
+}
+
+//mouseover events
+
+
 
 // Define streetmap and darkmap layers
 var satelitemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -29,16 +66,11 @@ var streetMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.pn
 
   // Create overlay object to hold our overlay layer
   var overlayMaps = {
-    Earthquakes: earthquakes,
-    TechtonicPlates: techPlates
+    MedianIncome: medIncome,
+    FoodAvailability: foodAvail,
+    FoodConsumption: foodCons
   };
 
-  // Create our map, giving it the streetmap and earthquakes layers to display on load
-  var myMap = L.map("map", {
-    center: [37.09, -95.71],
-    zoom: 4,
-    layers: [satelitemap, earthquakes]
-  });
 
   // Create a layer control
   // Pass in our baseMaps and overlayMaps
@@ -379,127 +411,6 @@ color = d3.scaleOrdinal()
         return x => format(Math.abs(x));
       }
 
-      import {swatches} from "@d3/color-legend"
 
   //Fig 3 (static)
-//code heavily referenced from
-// https://observablehq.com/@d3/radial-stacked-bar-chart
-function barChart(data)  {
-  const svg = d3.select(DOM.svg(width, height))
-      .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`)
-      .style("width", "100%")
-      .style("height", "auto")
-      .style("font", "10px sans-serif");
 
-  svg.append("g")
-    .selectAll("g")
-    .data(d3.stack().keys(data.columns.slice(1))(data))
-    .join("g")
-      .attr("fill", d => z(d.key))
-    .selectAll("path")
-    .data(d => d)
-    .join("path")
-      .attr("d", arc);
-
-  svg.append("g")
-      .call(xAxis);
-
-  svg.append("g")
-      .call(yAxis);
-
-  svg.append("g")
-      .call(legend);
-
-  return svg.node();
-}
-
-data = d3.csvParse(await FileAttachment("data-2.csv").text(), (d, _, columns) => {
-  let total = 0;
-  for (let i = 1; i < columns.length; ++i) total += d[columns[i]] = +d[columns[i]];
-  d.total = total;
-  return d;
-})
-
-arc = d3.arc()
-    .innerRadius(d => y(d[0]))
-    .outerRadius(d => y(d[1]))
-    .startAngle(d => x(d.data.State))
-    .endAngle(d => x(d.data.State) + x.bandwidth())
-    .padAngle(0.01)
-    .padRadius(innerRadius);
-
-x = d3.scaleBand()
-    .domain(data.map(d => d.State))
-    .range([0, 2 * Math.PI])
-    .align(0);
-
-y = {
-    // This scale maintains area proportionality of radial bars!
-  const y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.total)])
-        .range([innerRadius * innerRadius, outerRadius * outerRadius]);
-
-    return Object.assign(d => Math.sqrt(y(d)), y);
-  };
-
-  z = d3.scaleOrdinal()
-  .domain(data.columns.slice(1))
-  .range(["#98abc5", "#8a89a6", "#7b6888", 
-    "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-xAxis = g => g
-.attr("text-anchor", "middle")
-.call(g => g.selectAll("g")
-  .data(data)
-  .join("g")
-    .attr("transform", d => `
-      rotate(${((x(d.State) + x.bandwidth() / 2) * 180 / Math.PI - 90)})
-      translate(${innerRadius},0)
-    `)
-    .call(g => g.append("line")
-        .attr("x2", -5)
-        .attr("stroke", "#000"))
-    .call(g => g.append("text")
-        .attr("transform", d => (x(d.State) + x.bandwidth() / 2 + Math.PI / 2) % (2 * Math.PI) < Math.PI
-            ? "rotate(90)translate(0,16)"
-            : "rotate(-90)translate(0,-9)")
-        .text(d => d.State)))
-  
-yAxis = g => g
-.attr("text-anchor", "middle")
-.call(g => g.append("text")
-    .attr("y", d => -y(y.ticks(5).pop()))
-    .attr("dy", "-1em")
-    .text("Population"))
-.call(g => g.selectAll("g")
-  .data(y.ticks(5).slice(1))
-  .join("g")
-    .attr("fill", "none")
-    .call(g => g.append("circle")
-        .attr("stroke", "#000")
-        .attr("stroke-opacity", 0.5)
-        .attr("r", y))
-    .call(g => g.append("text")
-        .attr("y", d => -y(d))
-        .attr("dy", "0.35em")
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 5)
-        .text(y.tickFormat(5, "s"))
-      .clone(true)
-        .attr("fill", "#000")
-        .attr("stroke", "none")))
-
-legend = g => g.append("g")
-.selectAll("g")
-.data(data.columns.slice(1).reverse())
-.join("g")
-  .attr("transform", (d, i) => `translate(-40,${(i - (data.columns.length - 1) / 2) * 20})`)
-  .call(g => g.append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", z))
-  .call(g => g.append("text")
-      .attr("x", 24)
-      .attr("y", 9)
-      .attr("dy", "0.35em")
-      .text(d => d))
