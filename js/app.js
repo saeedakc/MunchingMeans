@@ -2,6 +2,7 @@
 // Choropleth begin
 //----------------------------------------------
 
+// start buttons
 
 var button_options = ['Median Income', 'Food Availability', 'Vegetable Consumption']
 
@@ -23,11 +24,13 @@ function init() {
 
 init();
 
+// end buttons
+
 // state boundaries geojson
 var stateURL = "../data/states.json"
-var json_medIncome;
-var json_foodAvai;
-var json_foodCons;
+var medIncome;
+var foodAvai;
+var foodCons;
 
 var myMap = L.map("map", {
   center: [34.0522, -118.2437],
@@ -57,31 +60,19 @@ var statelines = L.geoJson(stateData, {
 createMap(statelines);
 
 
-//connect from flask
-function drawBoundaries(points) {
-  var boundaryLayer = points.target;
-  info.update(boundaryLayer.feature.properties);
-
-  layer.setStyle({
-    weight: 2,
-    color: 'black',
-    fillOpacity: 0.75
-  });
-}
-
 //mouseover events
 function resetHighlightInc(e) {
-  json_medIncome.resetStyle(e.target);
+  medIncome.resetStyle(e.target);
   info.update();
 };
 
 function resetHighlightAvai(e) {
-  json_foodAvai.resetStyle(e.target);
+  foodAvai.resetStyle(e.target);
   info.update();
 };
 
 function resetHighlightCons(e) {
-  json_foodCons.resetStyle(e.target);
+  foodCons.resetStyle(e.target);
   info.update();
 };
 
@@ -109,86 +100,81 @@ function onEachFeatureAvai(feature, layer) {
   layer.bindPopup('<h3>' + feature.properties.NAME + '</h3>');
 };
 
-var url = ""
-
 // data from flask server
-d3.json(url, function(data) {
+var medIncomeURL = "/medIncome";
+var foodAvailURL = "/foodAvail";
+var foodConsURL = "/vegCons";
 
-  var medIncomeURL = "/medIncome";
-  var foodAvailURL = "/foodAvail";
-  var foodConsURL = "/foodCons";
-
-  d3.json(medIncomeURL, function(income_data) {
-    for (i=0; i < data.features.length; i++) {
-      Object.defineProperties(income_data).forEach(([key,value]) => {
-        if (key == data.features[i].properties.NAME) {
-          data.features[i].properties.INCOME = value;
-        };
-      });
-    };
-
-  d3.json(foodAvailURL, function(avail_data) {
-    for (i=0; i < data.features.length; i++) {
-      Object.defineProperties(avail_data).forEach(([key,value]) => {
-        if (key == data.features[i].properties.NAME) {
-          data.features[i].properties.AVAILABILITY = value;
-        };
-      });
-    };
-
-    d3.json(foodConsURL, function(consum_data) {
-      for (i=0; i < data.features.length; i++) {
-        Object.defineProperties(consum_data).forEach(([key,value]) => {
-          if (key == data.features[i].properties.NAME) {
-            data.features[i].properties.CONSUMPTION = value;
-          };
-        });
+d3.json(medIncomeURL, function(income_data) {
+  for (i=0; i < data.features.length; i++) {
+    Object.defineProperties(income_data).forEach(([key,value]) => {
+      if (key == data.features[i].properties.NAME) {
+        data.features[i].properties.INCOME = value;
       };
+    });
+  };
 
-      json_medIncome = L.choropleth(data, {
-        valueProperty: "INCOME",
-        scale: ['#ECE2F0', '#1C9099'],
-        steps: 5,
-        // q for quartile, e for equideistant, k for k-means
-        mode: 'q',
-        style: {
-          color: '#000',
-          weight: 1,
-          fillOpacity: 0.75
-        },
-        onEachFeature: onEachFeatureInc
+d3.json(foodAvailURL, function(avail_data) {
+  for (i=0; i < data.features.length; i++) {
+    Object.defineProperties(avail_data).forEach(([key,value]) => {
+      if (key == data.features[i].properties.NAME) {
+        data.features[i].properties.AVAILABILITY = value;
+      };
+    });
+  };
+
+  d3.json(foodConsURL, function(consum_data) {
+    for (i=0; i < data.features.length; i++) {
+      Object.defineProperties(consum_data).forEach(([key,value]) => {
+        if (key == data.features[i].properties.NAME) {
+          data.features[i].properties.CONSUMPTION = value;
+        };
       });
+    };
 
-      json_foodAvai = L.choropleth(data, {
-        valueProperty: "FOOD AVAILABILITY",
-        scale: ['#FDE0DD', '#C51B8A'],
-        steps: 5,
-        // q for quartile, e for equideistant, k for k-means
-        mode: 'q',
-        style: {
-          color: '#000',
-          weight: 1,
-          fillOpacity: 0.75
-        },
-        onEachFeature: onEachFeatureAvai
-      });
+    json_medIncome = L.choropleth(data, {
+      valueProperty: "INCOME",
+      scale: ['#ECE2F0', '#1C9099'],
+      steps: 5,
+      // q for quartile, e for equideistant, k for k-means
+      mode: 'q',
+      style: {
+        color: '#000',
+        weight: 1,
+        fillOpacity: 0.75
+      },
+      onEachFeature: onEachFeatureInc
+    });
 
-      json_foodCons = L.choropleth(data, {
-        valueProperty: "VEG CONSUMPTION",
-        scale: ['#F7FCB9', '#31A354'],
-        steps: 5,
-        // q for quartile, e for equideistant, k for k-means
-        mode: 'q',
-        style: {
-          color: '#000',
-          weight: 1,
-          fillOpacity: 0.75
-        },
-        onEachFeature: onEachFeatureCons
+    json_foodAvai = L.choropleth(data, {
+      valueProperty: "FOOD AVAILABILITY",
+      scale: ['#FDE0DD', '#C51B8A'],
+      steps: 5,
+      // q for quartile, e for equideistant, k for k-means
+      mode: 'q',
+      style: {
+        color: '#000',
+        weight: 1,
+        fillOpacity: 0.75
+      },
+      onEachFeature: onEachFeatureAvai
+    });
 
-      }).addTo(myMap);
+    json_foodCons = L.choropleth(data, {
+      valueProperty: "VEG CONSUMPTION",
+      scale: ['#F7FCB9', '#31A354'],
+      steps: 5,
+      // q for quartile, e for equideistant, k for k-means
+      mode: 'q',
+      style: {
+        color: '#000',
+        weight: 1,
+        fillOpacity: 0.75
+      },
+      onEachFeature: onEachFeatureCons
 
-  })
+    }).addTo(myMap);
+
 
   // Define streetmap and darkmap layers
   var satelitemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -213,7 +199,7 @@ d3.json(url, function(data) {
     var overlayMaps = {
       MedianIncome: medIncome,
       FoodAvailability: foodAvail,
-      FoodConsumption: foodCons
+      VegConsumption: vegCons
     };
 
 
@@ -246,10 +232,11 @@ d3.json(url, function(data) {
 
 
 //---------------------------------------------
-// End Choropleth; begin bar charts
+// End Choropleth; begin bar chart
 //---------------------------------------------
 
-// Step 1: Set up our chart
+
+// Set up our chart
 var svgWidth = innerWidth - 250;
 var svgHeight = innerHeight;
 
@@ -284,12 +271,10 @@ d3.csv("/foodTable").then(function(foodTable) {
   });
 
   var barSpacing = 10; // desired space between each bar
-  var scaleY = 10; // 10x scale on rect height
 
   // Create a 'barWidth' variable so that the bar chart spans the entire chartWidth.
   var barWidth = (chartWidth - (barSpacing * (food_group.length - 1))) / food_group.length;
 
-  // @TODO
   // Create code to build the bar chart using the tvData.
   chartGroup.selectAll(".bar")
     .data(foodTable)
@@ -392,6 +377,9 @@ d3.json(communityURL).then(function(data) {
   };
 
   Plotly.newPlot("plot", data, layout);
+
+  // hover code from 
+  // https://observablehq.com/@d3/multi-line-chart
 
   function hover(svg, path) {
   
