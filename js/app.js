@@ -1,3 +1,28 @@
+//----------------------------------------------
+// Choropleth begin
+//----------------------------------------------
+
+
+var button_options = ['Median Income', 'Food Availability', 'Vegetable Consumption']
+
+function init() {
+  // Grab a reference to the dropdown select element  
+  var selector = d3.select("#button");
+  // Use the list of sample names to populate the select options
+  d3.json(button_options, function(sampleNames) {
+
+      sampleNames.forEach((sample) => {
+          selector
+              .append("option")
+              .text(sample.substring(0, sample.length - 7))
+              .property("value", sample);
+      });
+
+  });
+}
+
+init();
+
 // state boundaries geojson
 var stateURL = "../data/states.json"
 var json_medIncome;
@@ -45,6 +70,11 @@ function drawBoundaries(points) {
 }
 
 //mouseover events
+function resetHighlightInc(e) {
+  json_medIncome.resetStyle(e.target);
+  info.update();
+};
+
 function resetHighlightAvai(e) {
   json_foodAvai.resetStyle(e.target);
   info.update();
@@ -53,6 +83,14 @@ function resetHighlightAvai(e) {
 function resetHighlightCons(e) {
   json_foodCons.resetStyle(e.target);
   info.update();
+};
+
+function onEachFeatureInc(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlightInc
+  });
+  layer.bindPopup('<h3>' + feature.properties.NAME + '</h3>');
 };
 
 function onEachFeatureCons(feature, layer) {
@@ -109,10 +147,46 @@ d3.json(url, function(data) {
 
       json_medIncome = L.choropleth(data, {
         valueProperty: "INCOME",
+        scale: ['#ECE2F0', '#1C9099'],
+        steps: 5,
+        // q for quartile, e for equideistant, k for k-means
+        mode: 'q',
+        style: {
+          color: '#000',
+          weight: 1,
+          fillOpacity: 0.75
+        },
+        onEachFeature: onEachFeatureInc
+      });
 
-      })
+      json_foodAvai = L.choropleth(data, {
+        valueProperty: "FOOD AVAILABILITY",
+        scale: ['#FDE0DD', '#C51B8A'],
+        steps: 5,
+        // q for quartile, e for equideistant, k for k-means
+        mode: 'q',
+        style: {
+          color: '#000',
+          weight: 1,
+          fillOpacity: 0.75
+        },
+        onEachFeature: onEachFeatureAvai
+      });
 
+      json_foodCons = L.choropleth(data, {
+        valueProperty: "VEG CONSUMPTION",
+        scale: ['#F7FCB9', '#31A354'],
+        steps: 5,
+        // q for quartile, e for equideistant, k for k-means
+        mode: 'q',
+        style: {
+          color: '#000',
+          weight: 1,
+          fillOpacity: 0.75
+        },
+        onEachFeature: onEachFeatureCons
 
+      }).addTo(myMap);
 
   })
 
@@ -143,225 +217,230 @@ d3.json(url, function(data) {
     };
 
 
-  // Create a layer control
-  // Pass in our baseMaps and overlayMaps
-  // Add the layer control to the map
-  L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
-  }).addTo(myMap);
+      // div object will be located in top right corner and have additional info
 
-// Grab data with d3
-d3.json(incomeData, function(data) {
+      info.onAdd = function(map) {
+        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+        this.update();
+        return this._div;
+    };
 
-  // Create a new choropleth layer
-  geojson = L.choropleth(data, {
+    info.update = function(props) {
+        this._div.innerHTML = '<h4>State Info</h4>' + (props ?
+            '<b>' + props.STATE + '</b><br />Median Income: $' + props.INCOME + '<br>Food Availability:' + (props.FoodAvailability).toFixed(2) + '%' + '<br>Vegetable Consumption:' + props.FoodConsumption :
+            'Hover over a state');
+    };
 
-    // Define what  property in the features to use
-    valueProperty: "xxx",
+    info.addTo(myMap);
 
-    // Set color scale
-    colors: [
-        "#e8e8e8", "#ace4e4", "#5ac8c8",
-        "#dfb0d6", "#a5add3", "#5698b9", 
-        "#be64ac", "#8c62aa", "#3b4994"
-      ],
 
-    // Number of breaks in step range
-    steps: 10,
 
-    // q for quartile, e for equidistant, k for k-means
-    mode: "q",
-    style: {
-      // Border color
-      color: "#fff",
-      weight: 1,
-      fillOpacity: 0.8
-    },
+    // Pass our map layers into our layer control
+    // Add the layer control to the map
+    L.control.layers(baseMaps, overlayMaps, { collapsed: false, position: 'bottomright' }).addTo(myMap);
+});
+});
+});
+};
 
-    // Binding a pop-up to each layer
-    onEachFeature: function(feature, layer) {
-      layer.bindPopup("Zip Code: " + feature.properties.ZIP + "<br>Median Household Income:<br>" +
-        "$" + feature.properties.MHI2016);
-    }
-  }).addTo(myMap);
 
-  function createFeatures(earthquakeData) {
 
-    function onEachFeature(feature, layer) {
-      layer.bindPopup("<h3>" + feature.properties.place +
-        "</h3><hr><p>" + new Date(feature.properties.time) + "</p><p>Magnitude: " + 
-        feature.properties.mag + "</p>")}
-  
-    // Define a function we want to run once for each feature in the features array
-    // Give each feature a popup describing the place and time of the earthquake
-    var earthquakes = L.geoJSON(earthquakeData, {
-      
-    //map the description for each point
-    onEachFeature : onEachFeature,
-    // map the marker color and size
-    pointToLayer : function(feature, latlng) {
-      return L.circleMarker(latlng,
-        {radius: circleSize(feature.properties.mag),
-        fillColor: circleColor(feature.properties.mag),
-        fillOpacity: 0.75,
-        stroke: false,
-        bubblingMouseEvent: true}
-        );
-      }
-    });
+//---------------------------------------------
+// End Choropleth; begin bar charts
+//---------------------------------------------
 
-  // Set up the legend
-  var legend = L.control({ position: "bottomright" });
-  legend.onAdd = function() {
-    var div = L.DomUtil.create("div", "info legend");
-    var limits = geojson.options.limits;
-    var colors = geojson.options.colors;
-    var labels = [];
+// Step 1: Set up our chart
+var svgWidth = innerWidth - 250;
+var svgHeight = innerHeight;
 
-    // Add min & max
-    var legendInfo = "<h1>Median Income</h1>" +
-      "<div class=\"labels\">" +
-        "<div class=\"min\">" + limits[0] + "</div>" +
-        "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-      "</div>";
+var margin = {
+  top: 50,
+  right: 50,
+  bottom: 120,
+  left: 120
+};
 
-    div.innerHTML = legendInfo;
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
 
-    limits.forEach(function(limit, index) {
-      labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-    });
+var svg = d3
+  .select("#horibar")
+  .append("svg")
+  .attr("width", svgWidth)
+  .attr("height", svgHeight)
+  .classed("chart", true);
 
-    div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-    return div;
-  };
+var chartGroup = svg.append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-  // Adding legend to the map
-  legend.addTo(myMap);
+// Import data
+d3.csv("/foodTable").then(function(foodTable) {
 
+  // Format the data
+  foodTable.forEach(function(data) {
+    data.food_group;
+    data.at_home = +data.at_home;
+    data.away_home = +data.away_home;
+  });
+
+  var barSpacing = 10; // desired space between each bar
+  var scaleY = 10; // 10x scale on rect height
+
+  // Create a 'barWidth' variable so that the bar chart spans the entire chartWidth.
+  var barWidth = (chartWidth - (barSpacing * (food_group.length - 1))) / food_group.length;
+
+  // @TODO
+  // Create code to build the bar chart using the tvData.
+  chartGroup.selectAll(".bar")
+    .data(foodTable)
+    .enter()
+    .append("rect")
+    .classed("bar", true)
+    .attr("width", d => barWidth)
+    .attr("height", d => d.at_home + d.away_home)
+    .attr("x", (d, i) => i * (barWidth + barSpacing))
+    .attr("y", d => chartHeight - d.at_home + d.away_home);
+}).catch(function(error) {
+  console.log(error);
 });
 
+    // Step 6: Initialize tool tip
+    // ==============================
+    var toolTip = d3.tip()
+      .attr("class", "d3-tip")
+      .offset([80, -60])
+      .html(d => (`Food Group: ${d.food_group}<br>Consumed at Home: ${d.at_home} <br>Consumed Away from Home: ${d.away_home}`));
 
-// --------------------------------------------------------
-// Above is useable code; below is copied code from D3.js
-// --------------------------------------------------------
+    // Step 7: Create tooltip in the chart
+    // ==============================
+    chartGroup.call(toolTip);
+
+    // Step 8: Create event listeners to display and hide the tooltip
+    // ==============================
+    chartGroup.on("mouseover", function(data) {
+      toolTip.show(data, this);
+    })
+      // onmouseout event
+      .on("mouseout", function(data, index) {
+        toolTip.hide(data);
+      });
+
+    // Create axes labels
+    chartGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left + 50)
+      .attr("x", 0 - (height / 2)-50)
+      .attr("dy", "1em")
+      .attr("class", "axisText")
+      .text("Food Group");
+
+    chartGroup.append("text")
+      .attr("transform", `translate(${width / 2 - 50}, ${height + margin.top + 10})`)
+      .attr("class", "axisText")
+      .text("Food Consumption");
 
 
 
-// Change the map to reflect the new map data
 
 
-// Include Fig 2 (static)
-// diverging stacked bar chart for food type consumption
-// from https://observablehq.com/@d3/diverging-stacked-bar-chart
-chart = {
-  const svg = d3.create("svg")
-      .attr("viewBox", [0, 0, width, height]);
 
-  svg.append("g")
-    .selectAll("g")
-    .data(series)
-    .join("g")
-      .attr("fill", d => color(d.key))
-    .selectAll("rect")
-    .data(d => d.map(v => Object.assign(v, {key: d.key})))
-    .join("rect")
-      .attr("x", d => x(d[0]))
-      .attr("y", ({data: [name]}) => y(name))
-      .attr("width", d => x(d[1]) - x(d[0]))
-      .attr("height", y.bandwidth())
-    .append("title")
-      .text(({key, data: [name, value]}) => `${name}
-${formatValue(value.get(key))} ${key}`);
 
-  svg.append("g")
-      .call(xAxis);
+//-----------------------------------------------
+// End stacked bar chart; begin line charts
+//-----------------------------------------------
 
-  svg.append("g")
-      .call(yAxis);
 
-  return svg.node();
-}
 
-data = {
-  const categories = {
-    "pants-fire": "Pants on fire!",
-    "false": "False",
-    "mostly-false": "Mostly false",
-    "barely-true": "Mostly false", // recategorized
-    "half-true": "Half true",
-    "mostly-true": "Mostly true",
-    "true": "True"
+
+
+
+var communityURL = "/comcon"
+
+d3.json(communityURL).then(function(data) {
+  // Grab values from the response json object to build the plots
+  var foodGroup = data.dataset.food;
+  var year = data.dataset.year;
+
+  var dates = data.dataset.data.map(row => row[0]);
+  // console.log(dates);
+  var items = data.dataset.data.map(row => row[4]);
+  // console.log(closingPrices);
+
+  var trace1 = {
+    type: "line",
+    mode: "lines",
+    name: foodGroup,
+    x: year,
+    y: items,
+    line: {
+      color: "#17BECF"
+    }
   };
 
-  const data = d3.csvParse(await FileAttachment("politifact.csv").text(), ({speaker: name, ruling: category, count: value}) => categories[category] ? {name, category: categories[category], value: +value} : null);
+  var data = [trace1];
 
-  // Normalize absolute values to percentage.
-  d3.rollup(data, group => {
-    const sum = d3.sum(group, d => d.value);
-    for (const d of group) d.value /= sum;
-  }, d => d.name);
+  var layout = {
+    title: `${stock} Consumption Survey Totals`,
+    xaxis: {
+      range: [year],
+      type: "date"
+    },
+    yaxis: {
+      autorange: true,
+      type: "linear"
+    }
+  };
 
-  return Object.assign(data, {
-    format: ".0%",
-    negative: "← More falsehoods",
-    positive: "More truths →",
-    negatives: ["Pants on fire!", "False", "Mostly false"],
-    positives: ["Half true", "Mostly true", "True"]
-  });
-}
+  Plotly.newPlot("plot", data, layout);
 
-signs = new Map([].concat(
-  data.negatives.map(d => [d, -1]),
-  data.positives.map(d => [d, +1])
-))
+  function hover(svg, path) {
+  
+    if ("ontouchstart" in document) svg
+        .style("-webkit-tap-highlight-color", "transparent")
+        .on("touchmove", moved)
+        .on("touchstart", entered)
+        .on("touchend", left)
+    else svg
+        .on("mousemove", moved)
+        .on("mouseenter", entered)
+        .on("mouseleave", left);
+  
+    const dot = svg.append("g")
+        .attr("display", "none");
+  
+    dot.append("circle")
+        .attr("r", 2.5);
+  
+    dot.append("text")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .attr("text-anchor", "middle")
+        .attr("y", -8);
+  
+    function moved() {
+      d3.event.preventDefault();
+      const ym = y.invert(d3.event.layerY);
+      const xm = x.invert(d3.event.layerX);
+      const i1 = d3.bisectLeft(data.dates, xm, 1);
+      const i0 = i1 - 1;
+      const i = xm - data.dates[i0] > data.dates[i1] - xm ? i1 : i0;
+      const s = d3.least(data.series, d => Math.abs(d.values[i] - ym));
+      path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
+      dot.attr("transform", `translate(${x(data.dates[i])},${y(s.values[i])})`);
+      dot.select("text").text(s.name);
+    }
+  
+    function entered() {
+      path.style("mix-blend-mode", null).attr("stroke", "#ddd");
+      dot.attr("display", null);
+    }
+  
+    function left() {
+      path.style("mix-blend-mode", "multiply").attr("stroke", null);
+      dot.attr("display", "none");
+    }
+  }
 
-bias = d3.rollups(data, v => d3.sum(v, d => d.value * Math.min(0, signs.get(d.category))), d => d.name)
-  .sort(([, a], [, b]) => d3.ascending(a, b))bias = d3.rollups(data, v => d3.sum(v, d => d.value * Math.min(0, signs.get(d.category))), d => d.name)
-  .sort(([, a], [, b]) => d3.ascending(a, b))
+  svg.call(hover, path);
 
-x = d3.scaleLinear()
-  .domain(d3.extent(series.flat(2)))
-  .rangeRound([margin.left, width - margin.right])
-
-y = d3.scaleBand()
-  .domain(bias.map(([name]) => name))
-  .rangeRound([margin.top, height - margin.bottom])
-  .padding(2 / 33)
-
-color = d3.scaleOrdinal()
-  .domain([].concat(data.negatives, data.positives))
-  .range(d3.schemeSpectral[data.negatives.length + data.positives.length])
-
-  xAxis = g => g
-  .attr("transform", `translate(0,${margin.top})`)
-  .call(d3.axisTop(x)
-      .ticks(width / 80)
-      .tickFormat(formatValue)
-      .tickSizeOuter(0))
-  .call(g => g.select(".domain").remove())
-  .call(g => g.append("text")
-      .attr("x", x(0) + 20)
-      .attr("y", -24)
-      .attr("fill", "currentColor")
-      .attr("text-anchor", "start")
-      .text(data.positive))
-  .call(g => g.append("text")
-      .attr("x", x(0) - 20)
-      .attr("y", -24)
-      .attr("fill", "currentColor")
-      .attr("text-anchor", "end")
-      .text(data.negative))
-
-      yAxis = g => g
-      .call(d3.axisLeft(y).tickSizeOuter(0))
-      .call(g => g.selectAll(".tick").data(bias).attr("transform", ([name, min]) => `translate(${x(min)},${y(name) + y.bandwidth() / 2})`))
-      .call(g => g.select(".domain").attr("transform", `translate(${x(0)},0)`))
-
-      formatValue = {
-        const format = d3.format(data.format || "");
-        return x => format(Math.abs(x));
-      }
-
-
-  //Fig 3 (static)
-
+});
