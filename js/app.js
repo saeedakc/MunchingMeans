@@ -1,5 +1,8 @@
 // state boundaries geojson
 var stateURL = "../data/states.json"
+var json_medIncome;
+var json_foodAvai;
+var json_foodCons;
 
 var myMap = L.map("map", {
   center: [34.0522, -118.2437],
@@ -42,34 +45,102 @@ function drawBoundaries(points) {
 }
 
 //mouseover events
+function resetHighlightAvai(e) {
+  json_foodAvai.resetStyle(e.target);
+  info.update();
+};
+
+function resetHighlightCons(e) {
+  json_foodCons.resetStyle(e.target);
+  info.update();
+};
+
+function onEachFeatureCons(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlightCons
+  });
+  layer.bindPopup('<h3>' + feature.properties.NAME + '</h3>');
+};
+
+function onEachFeatureAvai(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlightAvai
+  });
+  layer.bindPopup('<h3>' + feature.properties.NAME + '</h3>');
+};
+
+var url = ""
+
+// data from flask server
+d3.json(url, function(data) {
+
+  var medIncomeURL = "/medIncome";
+  var foodAvailURL = "/foodAvail";
+  var foodConsURL = "/foodCons";
+
+  d3.json(medIncomeURL, function(income_data) {
+    for (i=0; i < data.features.length; i++) {
+      Object.defineProperties(income_data).forEach(([key,value]) => {
+        if (key == data.features[i].properties.NAME) {
+          data.features[i].properties.INCOME = value;
+        };
+      });
+    };
+
+  d3.json(foodAvailURL, function(avail_data) {
+    for (i=0; i < data.features.length; i++) {
+      Object.defineProperties(avail_data).forEach(([key,value]) => {
+        if (key == data.features[i].properties.NAME) {
+          data.features[i].properties.AVAILABILITY = value;
+        };
+      });
+    };
+
+    d3.json(foodConsURL, function(consum_data) {
+      for (i=0; i < data.features.length; i++) {
+        Object.defineProperties(consum_data).forEach(([key,value]) => {
+          if (key == data.features[i].properties.NAME) {
+            data.features[i].properties.CONSUMPTION = value;
+          };
+        });
+      };
+
+      json_medIncome = L.choropleth(data, {
+        valueProperty: "INCOME",
+
+      })
 
 
 
-// Define streetmap and darkmap layers
-var satelitemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-  maxZoom: 18,
-  id: "mapbox.streets-basic",
-  accessToken: API_KEY
-})
+  })
 
-var streetMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-  maxZoom: 18,
-  id: "mapbox.dark",
-  accessToken: API_KEY
-})
+  // Define streetmap and darkmap layers
+  var satelitemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+    maxZoom: 18,
+    id: "mapbox.streets-basic",
+    accessToken: API_KEY
+  })
 
-  // Define a baseMaps object to hold our base layers
-  var baseMaps = {"Satelite Map": satelitemap,
-  "Dark Map": streetMap};
+  var streetMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+    maxZoom: 18,
+    id: "mapbox.dark",
+    accessToken: API_KEY
+  })
 
-  // Create overlay object to hold our overlay layer
-  var overlayMaps = {
-    MedianIncome: medIncome,
-    FoodAvailability: foodAvail,
-    FoodConsumption: foodCons
-  };
+    // Define a baseMaps object to hold our base layers
+    var baseMaps = {"Satelite Map": satelitemap,
+    "Dark Map": streetMap};
+
+    // Create overlay object to hold our overlay layer
+    var overlayMaps = {
+      MedianIncome: medIncome,
+      FoodAvailability: foodAvail,
+      FoodConsumption: foodCons
+    };
 
 
   // Create a layer control
@@ -89,7 +160,11 @@ d3.json(incomeData, function(data) {
     valueProperty: "xxx",
 
     // Set color scale
-    scale: ["#ffffb2", "#b10026"],
+    colors: [
+        "#e8e8e8", "#ace4e4", "#5ac8c8",
+        "#dfb0d6", "#a5add3", "#5698b9", 
+        "#be64ac", "#8c62aa", "#3b4994"
+      ],
 
     // Number of breaks in step range
     steps: 10,
@@ -170,130 +245,6 @@ d3.json(incomeData, function(data) {
 // Above is useable code; below is copied code from D3.js
 // --------------------------------------------------------
 
-
-// Build initialized map (interactive)
-// code heavily referenced from:
-// https://observablehq.com/@d3/bivariate-choropleth
-
-function choroChart(data) {
-  const svg = d3.create("svg")
-      .attr("viewBox", [0, 0, 975, 610]);
-
-  svg.append(legend)
-      .attr("transform", "translate(870,450)");
-
-  svg.append("g")
-    .selectAll("path")
-    .data(topojson.feature(us, us.objects.counties).features)
-    .join("path")
-      .attr("fill", d => color(data.get(d.id)))
-      .attr("d", path)
-    .append("title")
-      .text(d => `${d.properties.name}, ${states.get(d.id.slice(0, 2)).name}
-${format(data.get(d.id))}`);
-
-  svg.append("path")
-      .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-      .attr("fill", "none")
-      .attr("stroke", "white")
-      .attr("stroke-linejoin", "round")
-      .attr("d", path);
-
-  return svg.node();
-}; 
-
-legend = () => {
-  const k = 24;
-  const arrow = DOM.uid();
-  return svg`<g font-family=sans-serif font-size=10>
-  <g transform="translate(-${k * n / 2},-${k * n / 2}) rotate(-45 ${k * n / 2},${k * n / 2})">
-    <marker id="${arrow.id}" markerHeight=10 markerWidth=10 refX=6 refY=3 orient=auto>
-      <path d="M0,0L9,3L0,6Z" />
-    </marker>
-    ${d3.cross(d3.range(n), d3.range(n)).map(([i, j]) => svg`<rect width=${k} height=${k} x=${i * k} y=${(n - 1 - j) * k} fill=${colors[j * n + i]}>
-      <title>${data.title[0]}${labels[j] && ` (${labels[j]})`}
-${data.title[1]}${labels[i] && ` (${labels[i]})`}</title>
-    </rect>`)}
-    <line marker-end="${arrow}" x1=0 x2=${n * k} y1=${n * k} y2=${n * k} stroke=black stroke-width=1.5 />
-    <line marker-end="${arrow}" y2=0 y1=${n * k} stroke=black stroke-width=1.5 />
-    <text font-weight="bold" dy="0.71em" transform="rotate(90) translate(${n / 2 * k},6)" text-anchor="middle">${data.title[0]}</text>
-    <text font-weight="bold" dy="0.71em" transform="translate(${n / 2 * k},${n * k + 6})" text-anchor="middle">${data.title[1]}</text>
-  </g>
-</g>`;
-};
-
-data = Object.assign(new Map(d3.csvParse(await FileAttachment("cdc-diabetes-obesity.csv").text(), ({county, diabetes, obesity}) => [county, [+diabetes, +obesity]])), {title: ["Diabetes", "Obesity"]})
-
-schema =  { 
-  colors: [
-    "#e8e8e8", "#ace4e4", "#5ac8c8",
-    "#dfb0d6", "#a5add3", "#5698b9", 
-    "#be64ac", "#8c62aa", "#3b4994"
-  ]
-}
-labels = ["low", "", "high"]
-n = Math.floor(Math.sqrt(colors.length))
-
-x = d3.scaleQuantile(Array.from(data.values(), d => d[0]), d3.range(n))
-y = d3.scaleQuantile(Array.from(data.values(), d => d[1]), d3.range(n))
-path = d3.geoPath()
-
-color = {
-  return: value => {
-    if (!value) return "#ccc";
-    let [a, b] = value;
-    return colors[y(b) + x(a) * n];
-  }
-};
-
-format = (value) => {
-  if (!value) return "N/A";
-  let [a, b] = value;
-  return `${a}% ${data.title[0]}${labels[x(a)] && ` (${labels[x(a)]})`}
-${b}% ${data.title[1]}${labels[y(b)] && ` (${labels[y(b)]})`}`;
-};
-
-states = new Map(us.objects.states.geometries.map(d => [d.id, d.properties]))
-
-us = FileAttachment("counties-albers-10m.json").json()
-
-topojson = require("topojson-client@3")
-
-d3 = require("d3@5")
-
-d3.select("map").append(choroChart());
-
-// Reference the button actions (change in data)
-// On change to the DOM, call getData()
-d3.selectAll("#selDataset").on("change", getData);
-
-// Function called by DOM changes
-function getData() {
-  var dropdownMenu = d3.select("#selDataset");
-  // Assign the value of the dropdown menu option to a variable
-  var dataset = dropdownMenu.property("value");
-  // Initialize an empty array for the country's data
-  var data = [];
-
-  if (dataset == 'bivar') {
-      data = bothData;
-  }
-  else if (dataset == 'income') {
-      data = incomeData;
-  }
-  else if (dataset == 'food') {
-      data = foodData;
-  }
-  // Call function to update the chart
-  updateChoro(data);
-}
-
-// Update the restyled plot's values
-function updateChoro(newdata) {
-  Plotly.restyle("pie", "values", [newdata]);
-}
-
-init();
 
 
 // Change the map to reflect the new map data
