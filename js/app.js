@@ -2,30 +2,6 @@
 // Choropleth begin
 //----------------------------------------------
 
-// start buttons
-
-var button_options = ['Median Income', 'Food Availability', 'Vegetable Consumption']
-
-function init() {
-  // Grab a reference to the dropdown select element  
-  var selector = d3.select("#button");
-  // Use the list of sample names to populate the select options
-  d3.json(button_options, function(sampleNames) {
-
-      sampleNames.forEach((sample) => {
-          selector
-              .append("option")
-              .text(sample.substring(0, sample.length - 7))
-              .property("value", sample);
-      });
-
-  });
-}
-
-init();
-
-// end buttons
-
 // state boundaries geojson
 var stateURL = "../data/states.json"
 var medIncome;
@@ -184,7 +160,7 @@ d3.json(foodAvailURL, function(avail_data) {
     accessToken: API_KEY
   })
 
-  var streetMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+  var darkMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
     attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
     maxZoom: 18,
     id: "mapbox.dark",
@@ -193,7 +169,7 @@ d3.json(foodAvailURL, function(avail_data) {
 
     // Define a baseMaps object to hold our base layers
     var baseMaps = {"Satelite Map": satelitemap,
-    "Dark Map": streetMap};
+    "Dark Map": darkMap};
 
     // Create overlay object to hold our overlay layer
     var overlayMaps = {
@@ -251,7 +227,7 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 var svg = d3
-  .select("#horibar")
+  .select("#barchart")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight)
@@ -376,7 +352,7 @@ d3.json(communityURL).then(function(data) {
     }
   };
 
-  Plotly.newPlot("plot", data, layout);
+  Plotly.newPlot("lineplot", data, layout);
 
   // hover code from 
   // https://observablehq.com/@d3/multi-line-chart
