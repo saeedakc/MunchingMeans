@@ -78,37 +78,39 @@ function onEachFeatureAvai(feature, layer) {
 
 // data from flask server
 var medIncomeURL = "/medIncome";
-var foodAvailURL = "/foodAvail";
-var foodConsURL = "/vegCons";
+var foodTableURL = "/foodtable";
+var foodConsURL = "/foodcons";
+
+var new_data;
 
 d3.json(medIncomeURL, function(income_data) {
-  for (i=0; i < data.features.length; i++) {
-    Object.defineProperties(income_data).forEach(([key,value]) => {
-      if (key == data.features[i].properties.NAME) {
-        data.features[i].properties.INCOME = value;
+  for (i=0; i < new_data.length; i++) {
+    Object.defineProperties(income_data.State).forEach(([key,value]) => {
+      if (key == new_data.State[i]) {
+        new_data.features[i].properties.INCOME = value;
       };
     });
   };
 
-d3.json(foodAvailURL, function(avail_data) {
-  for (i=0; i < data.features.length; i++) {
-    Object.defineProperties(avail_data).forEach(([key,value]) => {
-      if (key == data.features[i].properties.NAME) {
-        data.features[i].properties.AVAILABILITY = value;
+d3.json(foodConsURL, function(consum_data) {
+  for (i=0; i < new_data.length; i++) {
+    Object.defineProperties(consum_data['State Name']).forEach(([key,value]) => {
+      if (key == new_data.State[i]) {
+        new_data.features[i].properties.FOODCONSUMPTION = value;
       };
     });
   };
 
-  d3.json(foodConsURL, function(consum_data) {
-    for (i=0; i < data.features.length; i++) {
-      Object.defineProperties(consum_data).forEach(([key,value]) => {
-        if (key == data.features[i].properties.NAME) {
-          data.features[i].properties.CONSUMPTION = value;
+  d3.json(foodTableURL, function(veggie_data) {
+    for (i=0; i < new_data.length; i++) {
+      Object.defineProperties(veggie_data['State Name']).forEach(([key,value]) => {
+        if (key == new_data.State[i]) {
+          new_data.features[i].properties.VEGCONSUMPTION = value;
         };
       });
     };
 
-    json_medIncome = L.choropleth(data, {
+    json_medIncome = L.choropleth(new_data, {
       valueProperty: "INCOME",
       scale: ['#ECE2F0', '#1C9099'],
       steps: 5,
@@ -122,8 +124,8 @@ d3.json(foodAvailURL, function(avail_data) {
       onEachFeature: onEachFeatureInc
     });
 
-    json_foodAvai = L.choropleth(data, {
-      valueProperty: "FOOD AVAILABILITY",
+    json_foodCons = L.choropleth(new_data, {
+      valueProperty: "FOODCONSUMPTION",
       scale: ['#FDE0DD', '#C51B8A'],
       steps: 5,
       // q for quartile, e for equideistant, k for k-means
@@ -136,8 +138,8 @@ d3.json(foodAvailURL, function(avail_data) {
       onEachFeature: onEachFeatureAvai
     });
 
-    json_foodCons = L.choropleth(data, {
-      valueProperty: "VEG CONSUMPTION",
+    json_vegCons = L.choropleth(new_data, {
+      valueProperty: "VEGCONSUMPTION",
       scale: ['#F7FCB9', '#31A354'],
       steps: 5,
       // q for quartile, e for equideistant, k for k-means
@@ -173,9 +175,9 @@ d3.json(foodAvailURL, function(avail_data) {
 
     // Create overlay object to hold our overlay layer
     var overlayMaps = {
-      MedianIncome: medIncome,
-      FoodAvailability: foodAvail,
-      VegConsumption: vegCons
+      MedianIncome: json_medIncome,
+      FoodConsumption: json_foodCons,
+      VegConsumption: json_vegCons
     };
 
 
@@ -189,7 +191,7 @@ d3.json(foodAvailURL, function(avail_data) {
 
     info.update = function(props) {
         this._div.innerHTML = '<h4>State Info</h4>' + (props ?
-            '<b>' + props.STATE + '</b><br />Median Income: $' + props.INCOME + '<br>Food Availability:' + (props.FoodAvailability).toFixed(2) + '%' + '<br>Vegetable Consumption:' + props.FoodConsumption :
+            '<b>' + props.STATE + '</b><br />Median Income: $' + props.INCOME + '<br>Food Consumption:' + (props.FoodConsumption).toFixed(2) + '%' + '<br>Vegetable Consumption:' + props.VegConsumption :
             'Hover over a state');
     };
 
@@ -236,14 +238,18 @@ var svg = d3
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+
+  
+  var foodAvailURL = "/foodAvail";
+
+
 // Import data
-d3.csv("/foodTable").then(function(foodTable) {
+d3.csv(cctblURL).then(function(cctbl) {
 
   // Format the data
-  foodTable.forEach(function(data) {
+  cctbl.forEach(function(data) {
     data.food_group;
-    data.at_home = +data.at_home;
-    data.away_home = +data.away_home;
+    data['Total'] = +data.total;
   });
 
   var barSpacing = 10; // desired space between each bar
@@ -258,9 +264,9 @@ d3.csv("/foodTable").then(function(foodTable) {
     .append("rect")
     .classed("bar", true)
     .attr("width", d => barWidth)
-    .attr("height", d => d.at_home + d.away_home)
+    .attr("height", d => d.total)
     .attr("x", (d, i) => i * (barWidth + barSpacing))
-    .attr("y", d => chartHeight - d.at_home + d.away_home);
+    .attr("y", d => chartHeight - d.total);
 }).catch(function(error) {
   console.log(error);
 });
@@ -270,7 +276,7 @@ d3.csv("/foodTable").then(function(foodTable) {
     var toolTip = d3.tip()
       .attr("class", "d3-tip")
       .offset([80, -60])
-      .html(d => (`Food Group: ${d.food_group}<br>Consumed at Home: ${d.at_home} <br>Consumed Away from Home: ${d.away_home}`));
+      .html(d => (`Food Group: ${d.food_group}<br>Consumed: ${d.total}`));
 
     // Step 7: Create tooltip in the chart
     // ==============================
@@ -307,31 +313,142 @@ d3.csv("/foodTable").then(function(foodTable) {
 
 
 //-----------------------------------------------
-// End stacked bar chart; begin line charts
+// End bar chart; begin lowVhigh bar charts
 //-----------------------------------------------
 
 
 
 
+var cctblURL = "/commoditycons";
 
 
-var communityURL = "/comcon"
-
-d3.json(communityURL).then(function(data) {
+d3.json(cctblURL).then(function(data) {
   // Grab values from the response json object to build the plots
-  var foodGroup = data.dataset.food;
-  var year = data.dataset.year;
+  var foodGroup = data['Food Group'];
+  var low_income = data['li_2007-08'];
+  var high_income = data['hi_2007-08'];
 
-  var dates = data.dataset.data.map(row => row[0]);
-  // console.log(dates);
-  var items = data.dataset.data.map(row => row[4]);
-  // console.log(closingPrices);
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = event.target.getBounds(),
+    height = event.target.getBounds();
+
+var x0 = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var x1 = d3.scale.ordinal();
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x0)
+    .tickSize(0)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var color = d3.scale.ordinal()
+    .range(["#ca0020","#0571b0"]);
+
+var svg = d3.select('groupBar').append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("data.json", function(error, data) {
+
+  var categoriesNames = data.map(function(d) { return d.food_group; });
+  var rateNames = data.map(function(d) { return d.rate; });
+
+  x0.domain(categoriesNames);
+  x1.domain(rateNames).rangeRoundBands([0, x0.rangeBand()]);
+  y.domain([0, d3.max(data, function(categorie) { return d3.max(categorie.values, function(d) { return d.value; }); })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .style('opacity','0')
+      .call(yAxis)
+  .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style('font-weight','bold')
+      .text("Value");
+
+  svg.select('.y').transition().duration(500).delay(1300).style('opacity','1');
+
+  var slice = svg.selectAll(".slice")
+      .data(data)
+      .enter().append("g")
+      .attr("class", "g")
+      .attr("transform",function(d) { return "translate(" + x0(d.categorie) + ",0)"; });
+
+  slice.selectAll("rect")
+      .data(function(d) { return d.values; })
+  .enter().append("rect")
+      .attr("width", x1.rangeBand())
+      .attr("x", function(d) { return x1(d.rate); })
+      .style("fill", function(d) { return color(d.rate) })
+      .attr("y", function(d) { return y(0); })
+      .attr("height", function(d) { return height - y(0); })
+      .on("mouseover", function(d) {
+          d3.select(this).style("fill", d3.rgb(color(d.rate)).darker(2));
+      })
+      .on("mouseout", function(d) {
+          d3.select(this).style("fill", color(d.rate));
+      });
+
+  slice.selectAll("rect")
+      .transition()
+      .delay(function (d) {return Math.random()*1000;})
+      .duration(1000)
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); });
+
+  //Legend
+  var legend = svg.selectAll(".legend")
+      .data(data[0].values.map(function(d) { return d.rate; }).reverse())
+  .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d,i) { return "translate(0," + i * 20 + ")"; })
+      .style("opacity","0");
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", function(d) { return color(d); });
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) {return d; });
+
+  legend.style("opacity","1");
+
+});
+
+
+
+  // console.log(amt_food);
 
   var trace1 = {
     type: "line",
     mode: "lines",
     name: foodGroup,
-    x: year,
+    x: amt_food,
     y: items,
     line: {
       color: "#17BECF"
@@ -353,58 +470,3 @@ d3.json(communityURL).then(function(data) {
   };
 
   Plotly.newPlot("lineplot", data, layout);
-
-  // hover code from 
-  // https://observablehq.com/@d3/multi-line-chart
-
-  function hover(svg, path) {
-  
-    if ("ontouchstart" in document) svg
-        .style("-webkit-tap-highlight-color", "transparent")
-        .on("touchmove", moved)
-        .on("touchstart", entered)
-        .on("touchend", left)
-    else svg
-        .on("mousemove", moved)
-        .on("mouseenter", entered)
-        .on("mouseleave", left);
-  
-    const dot = svg.append("g")
-        .attr("display", "none");
-  
-    dot.append("circle")
-        .attr("r", 2.5);
-  
-    dot.append("text")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", 10)
-        .attr("text-anchor", "middle")
-        .attr("y", -8);
-  
-    function moved() {
-      d3.event.preventDefault();
-      const ym = y.invert(d3.event.layerY);
-      const xm = x.invert(d3.event.layerX);
-      const i1 = d3.bisectLeft(data.dates, xm, 1);
-      const i0 = i1 - 1;
-      const i = xm - data.dates[i0] > data.dates[i1] - xm ? i1 : i0;
-      const s = d3.least(data.series, d => Math.abs(d.values[i] - ym));
-      path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
-      dot.attr("transform", `translate(${x(data.dates[i])},${y(s.values[i])})`);
-      dot.select("text").text(s.name);
-    }
-  
-    function entered() {
-      path.style("mix-blend-mode", null).attr("stroke", "#ddd");
-      dot.attr("display", null);
-    }
-  
-    function left() {
-      path.style("mix-blend-mode", "multiply").attr("stroke", null);
-      dot.attr("display", "none");
-    }
-  }
-
-  svg.call(hover, path);
-
-});
