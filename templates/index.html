@@ -41,8 +41,15 @@
     <div class="Info">
       <h2>United States Choropleth</h2>
       <hr>
-      <p>US Choropleth with updating layers based on user-click of one of three buttons below (purple circles). Bivalate choropleth for income vs food availability 
-        and individual choropleth for each variable</p> 
+      <p>US Choropleth with updating layers based on user-click of one of the overlays. Each layer ranks the states by one of three factors: Median Income,
+        Food Security, and Vegetable Consumption. Income data was pulled from the US Census; Food Security was pulled from the US Department of Agriculture;
+        Vegetable Consumption survey was referenced from data compiled by America's Health Rankings (.org), a project from the United Health Foundation.
+      </p> 
+      <p>According to the Dietary Guidelines for Americans, roughly half of adults in the United States suffer from one or more preventable chronic diseases 
+        related to poor diet and physical inactivity. Diets high in fruits and vegetables reduce the risk of many chronic diseases such as cardiovascular disease, 
+        type 2 diabetes and obesity. Vegetables contain essential vitamins and minerals and are an excellent source of fiber.
+      </p>
+      <p>We wanted to create this overlay in order to show similarities between low-income states, food-insecure states, and low vegetable consumption.</p>
     </div>
   </div> 
 
@@ -51,16 +58,22 @@
       <div class="barchart"></div>
         <h2>Bar Chart of Food Consumption</h2>
         <hr>
-        <p>The above chart shows </p>
-        <p>Here is our interpretation of the graph above.</p>
+        <p>The above chart shows the results of a study by the USDA that tracks the supply of food available for consumption in the United States and examines 
+          consumer food preferences by consumers’ census-gathered fingerprint.</p>
+        <p>From this extensive dataset, we wanted to get a feeling for how certain "healthy" food groups compare to one another in terms of consumption. This 
+          provides further context for the above Vegetable Consumption ranking map, by which we might be able to extrapolate the consumption of other necessary
+          food groups. We chose to display Vegetables' ranking on the map because of the consistently low consumption of this food group compared to other food groups.
+        </p>
     </div>
 
     <div class="col-md-6">
       <div class="lowVhigh"></div>
         <h2>Grouped Comparison of Food Consumption vs Income</h2>
         <hr>
-        <p>Insert description of the chart above.</p>
-        <p>Insert interpreation of graph above</p>
+        <p>Data gathered from USDA and Census data in the USDA's ERS study project.</p>
+        <p>In this grouped bar chart, we wanted to compare the Food Consumption rank by income level, split into low versus high income. We feel this chart gives direct
+          comparison to our hypothesis on a national level, that lower income potentially leads to unhealthy food consumption habits.
+        </p>
     </div>
   </div>
 
