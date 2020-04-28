@@ -3,7 +3,7 @@
 //----------------------------------------------
 
 // state boundaries geojson
-var stateURL = "../static/data/states.json"
+// var stateURL = "../static/data/states.json"
 var medIncome;
 var foodAvai;
 var foodCons;
@@ -13,27 +13,27 @@ var myMap = L.map("map", {
   zoom: 8
 });
 
-d3.json(stateURL, function(error, stateData) {
-  if (error) throw error;
-  //console.log(stateData.features);
+// d3.json(stateURL, function(error, stateData) {
+//   if (error) throw error;
+//   console.log(stateData.features);
 
-    // Once we get a response, send the data.features object to the createFeatures function
-    stateFeatures(stateData.features);
-  });
+//     // Once we get a response, send the data.features object to the createFeatures function
+//     stateFeatures(stateData.features);
+//   });
 
-  function stateFeatures(stateData) {
+//   function stateFeatures(stateData) {
 
-    function onEachFeature(feature, layer) {
-      layer.bindPopup("<h3>" + feature.properties.NAME + "</h3>")
-    }
+//     function onEachFeature(feature, layer) {
+//       layer.bindPopup("<h3>" + feature.properties.NAME + "</h3>")
+//     }
 
-var statelines = L.geoJson(stateData, {
-  onEachFeature: onEachFeature,
-  pointToLayer : function(latlng) {
-    return L.polygon(features.geometry.coordinates);
-  }
-});
-stateFeatures(statelines);
+// var statelines = L.geoJson(stateData, {
+//   onEachFeature: onEachFeature,
+//   pointToLayer : function(latlng) {
+//     return L.polygon(features.geometry.coordinates);
+//   }
+// });
+// stateFeatures(statelines);
 
 
 //mouseover events
@@ -205,13 +205,15 @@ d3.json(foodConsURL, function(consum_data) {
 });
 });
 });
-};
+
 
 
 
 //---------------------------------------------
 // End Choropleth; begin bar chart
 //---------------------------------------------
+
+
 
 
 // Set up our chart
@@ -256,11 +258,11 @@ d3.csv(foodAvailURL, function(food_data) {
   var barSpacing = 10; // desired space between each bar
 
   // Create a 'barWidth' variable so that the bar chart spans the entire chartWidth.
-  var barWidth = (width - (barSpacing * (food_group.length - 1))) / food_group.length;
+  var barWidth = (width - (barSpacing * (food_data.length - 1))) / food_data.length;
 
   // Create code to build the bar chart using the Data.
   chartGroup.selectAll(".bar")
-    .data(foodTable)
+    .data(food_data)
     .enter()
     .append("rect")
     .classed("bar", true)
@@ -277,6 +279,8 @@ d3.csv(foodAvailURL, function(food_data) {
       .offset([80, -60])
       .html(d => (`Food Group: ${d.food_group}<br>Consumed: ${d.total}`));
 
+
+      
     // Step 7: Create tooltip in the chart
     // ==============================
     chartGroup.call(toolTip);
