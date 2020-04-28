@@ -1,16 +1,32 @@
-h1{font-family: "Lucida Handwriting", cursive, sans-serif;}
+h1 {
+  font-family: "Comic San MS", cursive, sans-serif;
+  text-decoration: underline;
+}
 
-header{background-color: grey;}
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: "Comic San MS", Cursive, sans-serif;
+  color: black;
+}
 
-button {
-    background-color: rgb(175, 41, 175);
-    font-size: 24px;
-    text-align: center;
-    border: none; 
-    color: black;
-    display: inline-block;
-    padding: 12px 28px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)
+.bg-image {
+  height: 100%;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+hr { 
+  height: 1px;
+  color: black;
+  background-color:black;
+  border: none;
+}
+
+h3 {
+  text-align: center;
 }
 
 .navbar{ 
