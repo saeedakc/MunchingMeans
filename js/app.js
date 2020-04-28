@@ -215,8 +215,10 @@ d3.json(foodConsURL, function(consum_data) {
 
 
 // Set up our chart
-var svgWidth = innerWidth - 250;
-var svgHeight = innerHeight;
+var barbody = d3.select("#barchart")
+
+var svgWidth = barbody.innerWidth - 250;
+var svgHeight = barbody.innerHeight;
 
 var margin = {
   top: 50,
@@ -228,11 +230,10 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-var svg = d3
-  .select("#barchart")
+var svg = barbody
   .append("svg")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight)
+  .attr("width", barbody.innerWidth)
+  .attr("height", barbody.innerHeight)
   .classed("chart", true);
 
 var chartGroup = svg.append("g")
@@ -244,10 +245,10 @@ var chartGroup = svg.append("g")
 
 
 // Import data
-d3.csv(cctblURL).then(function(cctbl) {
+d3.csv(foodAvailURL).then(function(food_data) {
 
   // Format the data
-  cctbl.forEach(function(data) {
+  food_data.forEach(function(data) {
     data.food_group;
     data['Total'] = +data.total;
   });
@@ -257,7 +258,7 @@ d3.csv(cctblURL).then(function(cctbl) {
   // Create a 'barWidth' variable so that the bar chart spans the entire chartWidth.
   var barWidth = (chartWidth - (barSpacing * (food_group.length - 1))) / food_group.length;
 
-  // Create code to build the bar chart using the tvData.
+  // Create code to build the bar chart using the Data.
   chartGroup.selectAll(".bar")
     .data(foodTable)
     .enter()
@@ -308,165 +309,130 @@ d3.csv(cctblURL).then(function(cctbl) {
 
 
 
-
+  
 
 
 
 //-----------------------------------------------
 // End bar chart; begin lowVhigh bar charts
 //-----------------------------------------------
+// heavily referenced from 
+//https://medium.com/@vaibhavkumar_19430/how-to-create-a-grouped-bar-chart-in-d3-js-232c54f85894
 
 
+var barbody = d3.select("#lowVhigh")
+
+var svgWidth = barbody.innerWidth - 250;
+var svgHeight = barbody.innerHeight;
+
+var margin = {
+  top: 50,
+  right: 50,
+  bottom: 120,
+  left: 120
+};
+
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
+
+var svg = barbody
+  .append("svg")
+  .attr("width", barbody.innerWidth)
+  .attr("height", barbody.innerHeight)
+  .append("g")
+  .classed("chart", true)
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+var xScale0 = d3.scaleBand().range([0, width - margin.left - margin.right]).padding(0.2)
+
+var xScale1 = d3.scaleBand()
+
+var yScale = d3.scaleLinear().range([height - margin.top - margin.bottom, 0])
+
+
+
+var xAxis = d3.axisBottom(xScale0).tickSizeOuter(axisTicks.outerSize);
+
+var yAxis = d3.axisLeft(yScale).ticks(axisTicks.qty).tickSizeOuter(axisTicks.outerSize);
+
+
+xScale0.domain(models.map(d => d.food_group))
+xScale1.domain(['low income', 'high income']).range([0, xScale0.bandwidth()])
+yScale.domain([0, d3.max(models, d => d.low_income > d.high_income ? d.low_income : d.high_income)])
 
 
 var cctblURL = "/commoditycons";
 
 
-d3.json(cctblURL).then(function(data) {
+d3.json(cctblURL).then(function(d) {
   // Grab values from the response json object to build the plots
-  var foodGroup = data['Food Group'];
-  var low_income = data['li_2007-08'];
-  var high_income = data['hi_2007-08'];
+  var foodGroup = d['Food Group'];
+  var low_income = d['li_2007-08'];
+  var high_income = d['hi_2007-08'];
 
-
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = event.target.getBounds(),
-    height = event.target.getBounds();
-
-var x0 = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
-
-var x1 = d3.scale.ordinal();
-
-var y = d3.scale.linear()
-    .range([height, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x0)
-    .tickSize(0)
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
-
-var color = d3.scale.ordinal()
-    .range(["#ca0020","#0571b0"]);
-
-var svg = d3.select('groupBar').append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-d3.json("data.json", function(error, data) {
-
-  var categoriesNames = data.map(function(d) { return d.food_group; });
-  var rateNames = data.map(function(d) { return d.rate; });
-
-  x0.domain(categoriesNames);
-  x1.domain(rateNames).rangeRoundBands([0, x0.rangeBand()]);
-  y.domain([0, d3.max(data, function(categorie) { return d3.max(categorie.values, function(d) { return d.value; }); })]);
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .style('opacity','0')
-      .call(yAxis)
-  .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .style('font-weight','bold')
-      .text("Value");
-
-  svg.select('.y').transition().duration(500).delay(1300).style('opacity','1');
-
-  var slice = svg.selectAll(".slice")
-      .data(data)
-      .enter().append("g")
-      .attr("class", "g")
-      .attr("transform",function(d) { return "translate(" + x0(d.categorie) + ",0)"; });
-
-  slice.selectAll("rect")
-      .data(function(d) { return d.values; })
-  .enter().append("rect")
-      .attr("width", x1.rangeBand())
-      .attr("x", function(d) { return x1(d.rate); })
-      .style("fill", function(d) { return color(d.rate) })
-      .attr("y", function(d) { return y(0); })
-      .attr("height", function(d) { return height - y(0); })
-      .on("mouseover", function(d) {
-          d3.select(this).style("fill", d3.rgb(color(d.rate)).darker(2));
-      })
-      .on("mouseout", function(d) {
-          d3.select(this).style("fill", color(d.rate));
-      });
-
-  slice.selectAll("rect")
-      .transition()
-      .delay(function (d) {return Math.random()*1000;})
-      .duration(1000)
-      .attr("y", function(d) { return y(d.value); })
-      .attr("height", function(d) { return height - y(d.value); });
-
-  //Legend
-  var legend = svg.selectAll(".legend")
-      .data(data[0].values.map(function(d) { return d.rate; }).reverse())
+  var food_group = svg.selectAll(".food_group")
+  .data(models)
   .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d,i) { return "translate(0," + i * 20 + ")"; })
-      .style("opacity","0");
+  .attr("class", "food_group")
+  .attr("transform", d => `translate(${xScale0(d.foodGroup)},0)`);
 
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", function(d) { return color(d); });
+/* Add low income bars */
+food_group.selectAll(".bar.low_income")
+  .data(d => [d])
+  .enter()
+  .append("rect")
+  .attr("class", "bar low_income")
+  .style("fill","#ca0020")
+  .attr("x", d => xScale1('low_income'))
+  .attr("y", d => yScale(d.low_income))
+  .attr("width", xScale1.bandwidth())
+  .attr("height", d => {
+    return height - margin.top - margin.bottom - yScale(d.low_income)
+  });
+  
+/* Add high income bars */
+food_group.selectAll(".bar.high_income")
+  .data(d => [d])
+  .enter()
+  .append("rect")
+  .attr("class", "bar high_income")
+  .style("fill","#0571b0")
+  .attr("x", d => xScale1('high_income'))
+  .attr("y", d => yScale(d.high_income))
+  .attr("width", xScale1.bandwidth())
+  .attr("height", d => {
+    return height - margin.top - margin.bottom - yScale(d.high_income)
+  });
 
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) {return d; });
+// Add the X Axis
+svg.append("g")
+     .attr("class", "x axis")
+     .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+     .call(xAxis);
+// Add the Y Axis
+svg.append("g")
+     .attr("class", "y axis")
+     .call(yAxis);
 
-  legend.style("opacity","1");
+// Step 6: Initialize tool tip
+// ==============================
+var toolTip = d3.tip()
+  .attr("class", "d3-tip")
+  .offset([80, -60])
+  .html(d => (`Food Group: ${d.foodGroup}`));
+
+// Step 7: Create tooltip in the chart
+// ==============================
+chartGroup.call(toolTip);
+
+// Step 8: Create event listeners to display and hide the tooltip
+// ==============================
+chartGroup.on("mouseover", function(data) {
+  toolTip.show(data, this);
+})
+  // onmouseout event
+  .on("mouseout", function(data, index) {
+    toolTip.hide(data);
+  });
 
 });
-
-
-
-  // console.log(amt_food);
-
-  var trace1 = {
-    type: "line",
-    mode: "lines",
-    name: foodGroup,
-    x: amt_food,
-    y: items,
-    line: {
-      color: "#17BECF"
-    }
-  };
-
-  var data = [trace1];
-
-  var layout = {
-    title: `${stock} Consumption Survey Totals`,
-    xaxis: {
-      range: [year],
-      type: "date"
-    },
-    yaxis: {
-      autorange: true,
-      type: "linear"
-    }
-  };
-
-  Plotly.newPlot("lineplot", data, layout);
