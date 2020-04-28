@@ -1,0 +1,64 @@
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b0"},"﻿Food Group":"\"Fruit","li_2007-08":" total\"","hi_2007-08":"117.36"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b1"},"﻿Food Group":"\"Apples","li_2007-08":" total\"","hi_2007-08":"31.1"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b2"},"﻿Food Group":"Apples ","li_2007-08":"11.91","hi_2007-08":"13.89"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b3"},"﻿Food Group":"Apple juice1","li_2007-08":"19.31","hi_2007-08":"14.34"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b4"},"﻿Food Group":"Bananas","li_2007-08":"9.47","hi_2007-08":"10.9"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b5"},"﻿Food Group":"Berries","li_2007-08":"5.46","hi_2007-08":"7.38"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b6"},"﻿Food Group":"Grapes","li_2007-08":"8.75","hi_2007-08":"9.55"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b7"},"﻿Food Group":"Melons","li_2007-08":"4.13","hi_2007-08":"5.61"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b8"},"﻿Food Group":"\"Oranges","li_2007-08":" total\"","hi_2007-08":"34.26"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0b9"},"﻿Food Group":"Oranges ","li_2007-08":"3.17","hi_2007-08":"2.48"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ba"},"﻿Food Group":"Orange juice2","li_2007-08":"31.11","hi_2007-08":"30.71"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0bb"},"﻿Food Group":"Other citrus fruits","li_2007-08":"5.42","hi_2007-08":"6.34"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0bc"},"﻿Food Group":"Stone fruits","li_2007-08":"5.87","hi_2007-08":"7.78"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0bd"},"﻿Food Group":"Tropical fruits","li_2007-08":"6.37","hi_2007-08":"5.28"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0be"},"﻿Food Group":"\"Vegetables","li_2007-08":" total\"","hi_2007-08":"147.36"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0bf"},"﻿Food Group":"\"Brassica","li_2007-08":" total\"","hi_2007-08":"7.5"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c0"},"﻿Food Group":"Broccoli and cauliflower","li_2007-08":"3.54","hi_2007-08":"5.26"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c1"},"﻿Food Group":"Carrots","li_2007-08":"3.44","hi_2007-08":"4.51"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c2"},"﻿Food Group":"Celery","li_2007-08":"2.51","hi_2007-08":"2.93"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c3"},"﻿Food Group":"Cucumbers","li_2007-08":"2.25","hi_2007-08":"2.28"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c4"},"﻿Food Group":"Green peas","li_2007-08":"1.7","hi_2007-08":"1.77"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c5"},"﻿Food Group":"\"Leafy vegetables","li_2007-08":" total\"","hi_2007-08":"0.68"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c6"},"﻿Food Group":"Lettuce","li_2007-08":"10.95","hi_2007-08":"15.77"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c7"},"﻿Food Group":"Onions","li_2007-08":"7.59","hi_2007-08":"9.04"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c8"},"﻿Food Group":"Peppers","li_2007-08":"6.64","hi_2007-08":"7.92"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0c9"},"﻿Food Group":"Tomatoes","li_2007-08":"28.14","hi_2007-08":"32.14"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ca"},"﻿Food Group":"Sweet corn","li_2007-08":"6.04","hi_2007-08":"6.36"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0cb"},"﻿Food Group":"Potatoes","li_2007-08":"49.31","hi_2007-08":"53.78"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0cc"},"﻿Food Group":"Snap beans","li_2007-08":"3.26","hi_2007-08":"4.1"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0cd"},"﻿Food Group":"\"Legumes","li_2007-08":" dried\"","hi_2007-08":"5.46"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ce"},"﻿Food Group":"\"Dairy","li_2007-08":" total\"","hi_2007-08":"201.9"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0cf"},"﻿Food Group":"\"Fluid milk","li_2007-08":" total3\"","hi_2007-08":"128.24"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d0"},"﻿Food Group":"\"Fluid milk","li_2007-08":" 1-percent fat3\"","hi_2007-08":"13.46"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d1"},"﻿Food Group":"\"Fluid milk","li_2007-08":" 2-percent fat3\"","hi_2007-08":"44.86"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d2"},"﻿Food Group":"\"Fluid milk","li_2007-08":" skim3\"","hi_2007-08":"12.27"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d3"},"﻿Food Group":"\"Fluid milk","li_2007-08":" whole3\"","hi_2007-08":"43.32"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d4"},"﻿Food Group":"Butter","li_2007-08":"2.55","hi_2007-08":"3.22"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d5"},"﻿Food Group":"Cheese","li_2007-08":"19.01","hi_2007-08":"23.62"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d6"},"﻿Food Group":"Yogurt","li_2007-08":"6.3","hi_2007-08":"9.26"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d7"},"﻿Food Group":"\"Dairy","li_2007-08":" other\"","hi_2007-08":"9.5"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d8"},"﻿Food Group":"\"Meat","li_2007-08":" poultry","hi_2007-08":" and fish"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0d9"},"﻿Food Group":"\"Meat","li_2007-08":" total\"","hi_2007-08":"75.28"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0da"},"﻿Food Group":"Beef","li_2007-08":"44.84","hi_2007-08":"47.61"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0db"},"﻿Food Group":"Pork","li_2007-08":"29.96","hi_2007-08":"32.75"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0dc"},"﻿Food Group":"\"Poultry","li_2007-08":" total\"","hi_2007-08":"53.83"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0dd"},"﻿Food Group":"Chicken","li_2007-08":"46.27","hi_2007-08":"49.87"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0de"},"﻿Food Group":"Turkey","li_2007-08":"7.45","hi_2007-08":"9.51"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0df"},"﻿Food Group":"Finfish and shellfish","li_2007-08":"8.48","hi_2007-08":"10.6"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e0"},"﻿Food Group":"Eggs4","li_2007-08":"18.61","hi_2007-08":"19.22"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e1"},"﻿Food Group":"\"Grains","li_2007-08":" total\"","hi_2007-08":"129.97"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e2"},"﻿Food Group":"Corn flour","li_2007-08":"15.22","hi_2007-08":"12.37"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e3"},"﻿Food Group":"Oat flour","li_2007-08":"2.22","hi_2007-08":"3.14"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e4"},"﻿Food Group":"\"Rice","li_2007-08":" dried\"","hi_2007-08":"12.15"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e5"},"﻿Food Group":"Wheat flour","li_2007-08":"91.09","hi_2007-08":"100.56"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e6"},"﻿Food Group":"\"Fat and oils","li_2007-08":" total\"","hi_2007-08":"60.63"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e7"},"﻿Food Group":"Margarine","li_2007-08":"2.31","hi_2007-08":"2.85"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e8"},"﻿Food Group":"Salad and cooking oils","li_2007-08":"33.01","hi_2007-08":"36.33"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0e9"},"﻿Food Group":"Shortening","li_2007-08":"9.48","hi_2007-08":"10.35"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ea"},"﻿Food Group":"\"Oils","li_2007-08":" other\"","hi_2007-08":"1.02"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0eb"},"﻿Food Group":"Caloric sweeteners","li_2007-08":"81.07","hi_2007-08":"78.75"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ec"},"﻿Food Group":"\"Nuts","li_2007-08":" total\"","hi_2007-08":"5.85"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ed"},"﻿Food Group":"Peanuts","li_2007-08":"4.46","hi_2007-08":"6.65"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ee"},"﻿Food Group":"Tree nuts","li_2007-08":"1.44","hi_2007-08":"3.66"}
+{"_id":{"$oid":"5ea8b2b5ca4a710580a7c0ef"},"﻿Food Group":"","li_2007-08":null,"hi_2007-08":null}
