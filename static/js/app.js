@@ -3,7 +3,7 @@
 //----------------------------------------------
 
 // state boundaries geojson
-var stateURL = "../data/states.json"
+var stateURL = "../static/data/states.json"
 var medIncome;
 var foodAvai;
 var foodCons;
@@ -245,7 +245,7 @@ var chartGroup = svg.append("g")
 
 
 // Import data
-d3.csv(foodAvailURL).then(function(food_data) {
+d3.csv(foodAvailURL, function(food_data) {
 
   // Format the data
   food_data.forEach(function(data) {
@@ -268,8 +268,6 @@ d3.csv(foodAvailURL).then(function(food_data) {
     .attr("height", d => d.total)
     .attr("x", (d, i) => i * (barWidth + barSpacing))
     .attr("y", d => chartHeight - d.total);
-}).catch(function(error) {
-  console.log(error);
 });
 
     // Step 6: Initialize tool tip
