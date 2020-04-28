@@ -33,7 +33,7 @@ var statelines = L.geoJson(stateData, {
     return L.polygon(features.geometry.coordinates);
   }
 });
-createMap(statelines);
+stateFeatures(statelines);
 
 
 //mouseover events
