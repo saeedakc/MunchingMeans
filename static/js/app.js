@@ -256,7 +256,7 @@ d3.csv(foodAvailURL, function(food_data) {
   var barSpacing = 10; // desired space between each bar
 
   // Create a 'barWidth' variable so that the bar chart spans the entire chartWidth.
-  var barWidth = (chartWidth - (barSpacing * (food_group.length - 1))) / food_group.length;
+  var barWidth = (width - (barSpacing * (food_group.length - 1))) / food_group.length;
 
   // Create code to build the bar chart using the Data.
   chartGroup.selectAll(".bar")
@@ -267,13 +267,13 @@ d3.csv(foodAvailURL, function(food_data) {
     .attr("width", d => barWidth)
     .attr("height", d => d.total)
     .attr("x", (d, i) => i * (barWidth + barSpacing))
-    .attr("y", d => chartHeight - d.total);
+    .attr("y", d => height - d.total);
 });
 
     // Step 6: Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
-      .attr("class", "d3-tip")
+      .attr("class", "tooltip")
       .offset([80, -60])
       .html(d => (`Food Group: ${d.food_group}<br>Consumed: ${d.total}`));
 
@@ -415,7 +415,7 @@ svg.append("g")
 // Step 6: Initialize tool tip
 // ==============================
 var toolTip = d3.tip()
-  .attr("class", "d3-tip")
+  .attr("class", "tooltip")
   .offset([80, -60])
   .html(d => (`Food Group: ${d.foodGroup}`));
 
