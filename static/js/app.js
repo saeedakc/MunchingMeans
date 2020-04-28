@@ -3,15 +3,11 @@
 //----------------------------------------------
 
 // state boundaries geojson
-// var stateURL = "../static/data/states.json"
+var stateURL = "../static/data/states.json"
 var medIncome;
 var foodAvai;
 var foodCons;
 
-var myMap = L.map("map", {
-  center: [34.0522, -118.2437],
-  zoom: 8
-});
 
 // d3.json(stateURL, function(error, stateData) {
 //   if (error) throw error;
@@ -77,43 +73,99 @@ function onEachFeatureAvai(feature, layer) {
 };
 
 // data from flask server
-var medIncomeURL = "/medIncome";
-var foodTableURL = "/foodtable";
+var medIncomeURL = "/medincome";
 var foodConsURL = "/foodcons";
+var foodTableURL = "/foodtable";
 
-var new_data;
+var new_income = [];
+var new_cons = [];
+var new_veg = [];
+
+
+//income data
 
 d3.json(medIncomeURL, function(income_data) {
-  for (i=0; i < new_data.length; i++) {
-    Object.defineProperties(income_data.State).forEach(([key,value]) => {
-      if (key == new_data.State[i]) {
-        new_data.features[i].properties.INCOME = value;
-      };
-    });
-  };
+  function state_income(state, income) {
+    this.state = state
+    this.income = income
+  }
+ // console.log(income_data)
+  var states = income_data[0].State.map((item, i) => {
+    return item
+  })
 
-d3.json(foodConsURL, function(consum_data) {
-  for (i=0; i < new_data.length; i++) {
-    Object.defineProperties(consum_data['State Name']).forEach(([key,value]) => {
-      if (key == new_data.State[i]) {
-        new_data.features[i].properties.FOODCONSUMPTION = value;
-      };
-    });
-  };
+  var income = income_data[0]["2007 MHI"].map(income => {
+    return income
+  });
+  // console.log(states)
+  // console.log(income)
 
-  d3.json(foodTableURL, function(veggie_data) {
-    for (i=0; i < new_data.length; i++) {
-      Object.defineProperties(veggie_data['State Name']).forEach(([key,value]) => {
-        if (key == new_data.State[i]) {
-          new_data.features[i].properties.VEGCONSUMPTION = value;
-        };
-      });
-    };
+  states.forEach((state, i) => {
+    new_income.push(new state_income(state, income[i]))
+  });
+});
+  //console.log(new_income)
 
-    json_medIncome = L.choropleth(new_data, {
-      valueProperty: "INCOME",
+
+ //new food security data
+ d3.json(foodTableURL, function(secu_data) {
+  function state_secu(state, security) {
+    this.state = state
+    this.security = security
+  }
+  //console.log(secu_data)
+  var states = secu_data[0]['State Name'].map(state => {
+    return state
+  })
+
+  var rank = secu_data[0].Rank.map(rank => {
+    return rank
+  });
+  // console.log(states)
+  // console.log(income)
+
+  states.forEach((state, i) => {
+    new_cons.push(new state_secu(state, rank[i]))
+  });
+
+});
+
+ // console.log(new_data)
+
+
+ // veggie rank data
+
+ d3.json(foodConsURL, function(veg_data) {
+  function state_veg(state, veg) {
+    this.state = state
+    this.veg = veg
+  }
+  //console.log(veg_data)
+  var states = veg_data[0]['State Name'].map(state => {
+    return state
+  })
+
+  var rank = veg_data[0].Rank.map(rank => {
+    return rank
+  });
+  // console.log(states)
+  // console.log(income)
+
+  states.forEach((state, i) => {
+    new_veg.push(new state_veg(state, rank[i]))
+  });
+});
+ //console.log(new_veg)
+
+
+ // create choropleth layers
+
+
+d3.json(new_income, function(data) {
+    json_medIncome = L.choropleth(data, {
+      valueProperty: "income",
       scale: ['#ECE2F0', '#1C9099'],
-      steps: 5,
+      steps: 10,
       // q for quartile, e for equideistant, k for k-means
       mode: 'q',
       style: {
@@ -122,36 +174,40 @@ d3.json(foodConsURL, function(consum_data) {
         fillOpacity: 0.75
       },
       onEachFeature: onEachFeatureInc
-    });
-
-    json_foodCons = L.choropleth(new_data, {
-      valueProperty: "FOODCONSUMPTION",
-      scale: ['#FDE0DD', '#C51B8A'],
-      steps: 5,
-      // q for quartile, e for equideistant, k for k-means
-      mode: 'q',
-      style: {
-        color: '#000',
-        weight: 1,
-        fillOpacity: 0.75
-      },
-      onEachFeature: onEachFeatureAvai
-    });
-
-    json_vegCons = L.choropleth(new_data, {
-      valueProperty: "VEGCONSUMPTION",
-      scale: ['#F7FCB9', '#31A354'],
-      steps: 5,
-      // q for quartile, e for equideistant, k for k-means
-      mode: 'q',
-      style: {
-        color: '#000',
-        weight: 1,
-        fillOpacity: 0.75
-      },
-      onEachFeature: onEachFeatureCons
-
     }).addTo(myMap);
+
+
+d3.json(new_cons, function(data) {
+  json_foodCons = L.choropleth(data, {
+    valueProperty: "rank",
+    scale: ['#ECE2F0', '#1C9099'],
+    steps: 10,
+    // q for quartile, e for equideistant, k for k-means
+    mode: 'q',
+    style: {
+      color: '#000',
+      weight: 1,
+      fillOpacity: 0.75
+    },
+    onEachFeature: onEachFeatureCons
+  }).addTo(myMap);
+
+
+d3.json(new_veg, function(data) {
+  json_vegCons = L.choropleth(data, {
+    valueProperty: "rank",
+    scale: ['#ECE2F0', '#1C9099'],
+    steps: 10,
+    // q for quartile, e for equideistant, k for k-means
+    mode: 'q',
+    style: {
+      color: '#000',
+      weight: 1,
+      fillOpacity: 0.75
+    },
+    onEachFeature: onEachFeatureAvai
+  }).addTo(myMap);
+
 
 
   // Define streetmap and darkmap layers
@@ -175,33 +231,26 @@ d3.json(foodConsURL, function(consum_data) {
 
     // Create overlay object to hold our overlay layer
     var overlayMaps = {
-      MedianIncome: json_medIncome,
-      FoodConsumption: json_foodCons,
-      VegConsumption: json_vegCons
+      "Median Income": json_medIncome,
+      "Food Scarcity Rank": json_foodCons,
+      "Veggie Consumption RAnk": json_vegCons
     };
 
+    var myMap = L.map("#map", {
+      center: [34.0522, -118.2437],
+      zoom: 8,
+      layers: [satelitemap, json_medIncome]
+    });
+
+    L.control.layers(baseMaps, overlayMaps, {
+      collapsed: false
+    }).addTo(myMap);
 
       // div object will be located in top right corner and have additional info
 
-      info.onAdd = function(map) {
-        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-        this.update();
-        return this._div;
-    };
+  
+    legend.addTo(myMap);
 
-    info.update = function(props) {
-        this._div.innerHTML = '<h4>State Info</h4>' + (props ?
-            '<b>' + props.STATE + '</b><br />Median Income: $' + props.INCOME + '<br>Food Consumption:' + (props.FoodConsumption).toFixed(2) + '%' + '<br>Vegetable Consumption:' + props.VegConsumption :
-            'Hover over a state');
-    };
-
-    info.addTo(myMap);
-
-
-
-    // Pass our map layers into our layer control
-    // Add the layer control to the map
-    L.control.layers(baseMaps, overlayMaps, { collapsed: false, position: 'bottomright' }).addTo(myMap);
 });
 });
 });
@@ -216,98 +265,113 @@ d3.json(foodConsURL, function(consum_data) {
 
 
 
-// Set up our chart
-var barbody = d3.select("#barchart")
+// // Set up our chart
+// var barbody = d3.select("#barchart")
 
-var svgWidth = barbody.innerWidth - 250;
-var svgHeight = barbody.innerHeight;
+// var svgWidth = barbody.innerWidth - 250;
+// var svgHeight = barbody.innerHeight;
 
-var margin = {
-  top: 50,
-  right: 50,
-  bottom: 120,
-  left: 120
-};
+// var margin = {
+//   top: 50,
+//   right: 50,
+//   bottom: 120,
+//   left: 120
+// };
 
-var width = svgWidth - margin.left - margin.right;
-var height = svgHeight - margin.top - margin.bottom;
+// var width = svgWidth - margin.left - margin.right;
+// var height = svgHeight - margin.top - margin.bottom;
 
-var svg = barbody
-  .append("svg")
-  .attr("width", barbody.innerWidth)
-  .attr("height", barbody.innerHeight)
-  .classed("chart", true);
+// var svg = barbody
+//   .append("svg")
+//   .attr("width", barbody.innerWidth)
+//   .attr("height", barbody.innerHeight)
+//   .classed("chart", true);
 
-var chartGroup = svg.append("g")
-  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+// var chartGroup = svg.append("g")
+//   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 
   
-  var foodAvailURL = "/foodAvail";
+//   var foodAvailURL = "/foodAvail";
+//   var new_group = [];
 
+// // Import data
+// d3.csv(foodAvailURL, function(food_data) {
+// console.log(food_data[0])
+//   // Format the data
+//  //new food security data
+//   function food_cons(food_group, total) {
+//     this.food_group = food_group
+//     this.total = total
+//   }
+//   //console.log(secu_data)
+//   var food_group = food_data['Food Group'].map(food_group => {
+//     return food_group
+//   })
 
-// Import data
-d3.csv(foodAvailURL, function(food_data) {
+//   var total = food_data.Total.map(total => {
+//     return total
+//   });
+//   console.log(food_group)
+//   // console.log(income)
 
-  // Format the data
-  food_data.forEach(function(data) {
-    data.food_group;
-    data['Total'] = +data.total;
-  });
+//   states.forEach((state, i) => {
+//     new_cons.push(new state_secu(state, rank[i]))
+//   });
 
-  var barSpacing = 10; // desired space between each bar
+//   var barSpacing = 10; // desired space between each bar
 
-  // Create a 'barWidth' variable so that the bar chart spans the entire chartWidth.
-  var barWidth = (width - (barSpacing * (food_data.length - 1))) / food_data.length;
+//   // Create a 'barWidth' variable so that the bar chart spans the entire chartWidth.
+//   var barWidth = (width - (barSpacing * (food_data.length - 1))) / food_data.length;
 
-  // Create code to build the bar chart using the Data.
-  chartGroup.selectAll(".bar")
-    .data(food_data)
-    .enter()
-    .append("rect")
-    .classed("bar", true)
-    .attr("width", d => barWidth)
-    .attr("height", d => d.total)
-    .attr("x", (d, i) => i * (barWidth + barSpacing))
-    .attr("y", d => height - d.total);
-});
+//   // Create code to build the bar chart using the Data.
+//   chartGroup.selectAll(".bar")
+//     .data(food_data)
+//     .enter()
+//     .append("rect")
+//     .classed("bar", true)
+//     .attr("width", d => barWidth)
+//     .attr("height", d => d.total)
+//     .attr("x", (d, i) => i * (barWidth + barSpacing))
+//     .attr("y", d => height - d.total);
+// });
 
-    // Step 6: Initialize tool tip
-    // ==============================
-    var toolTip = d3.tip()
-      .attr("class", "tooltip")
-      .offset([80, -60])
-      .html(d => (`Food Group: ${d.food_group}<br>Consumed: ${d.total}`));
+//     // Step 6: Initialize tool tip
+//     // ==============================
+//     var toolTip = d3.tip()
+//       .attr("class", "tooltip")
+//       .offset([80, -60])
+//       .html(d => (`Food Group: ${d.food_group}<br>Consumed: ${d.total}`));
 
 
       
-    // Step 7: Create tooltip in the chart
-    // ==============================
-    chartGroup.call(toolTip);
+//     // Step 7: Create tooltip in the chart
+//     // ==============================
+//     chartGroup.call(toolTip);
 
-    // Step 8: Create event listeners to display and hide the tooltip
-    // ==============================
-    chartGroup.on("mouseover", function(data) {
-      toolTip.show(data, this);
-    })
-      // onmouseout event
-      .on("mouseout", function(data, index) {
-        toolTip.hide(data);
-      });
+//     // Step 8: Create event listeners to display and hide the tooltip
+//     // ==============================
+//     chartGroup.on("mouseover", function(data) {
+//       toolTip.show(data, this);
+//     })
+//       // onmouseout event
+//       .on("mouseout", function(data, index) {
+//         toolTip.hide(data);
+//       });
 
-    // Create axes labels
-    chartGroup.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left + 50)
-      .attr("x", 0 - (height / 2)-50)
-      .attr("dy", "1em")
-      .attr("class", "axisText")
-      .text("Food Group");
+//     // Create axes labels
+//     chartGroup.append("text")
+//       .attr("transform", "rotate(-90)")
+//       .attr("y", 0 - margin.left + 50)
+//       .attr("x", 0 - (height / 2)-50)
+//       .attr("dy", "1em")
+//       .attr("class", "axisText")
+//       .text("Food Group");
 
-    chartGroup.append("text")
-      .attr("transform", `translate(${width / 2 - 50}, ${height + margin.top + 10})`)
-      .attr("class", "axisText")
-      .text("Food Consumption");
+//     chartGroup.append("text")
+//       .attr("transform", `translate(${width / 2 - 50}, ${height + margin.top + 10})`)
+//       .attr("class", "axisText")
+//       .text("Food Consumption");
 
 
 
@@ -353,24 +417,45 @@ var yScale = d3.scaleLinear().range([height - margin.top - margin.bottom, 0])
 
 
 
-var xAxis = d3.axisBottom(xScale0).tickSizeOuter(axisTicks.outerSize);
+// var xAxis = d3.axisBottom(xScale0).tickSizeOuter(axisTicks.outerSize);
 
-var yAxis = d3.axisLeft(yScale).ticks(axisTicks.qty).tickSizeOuter(axisTicks.outerSize);
-
-
-xScale0.domain(models.map(d => d.food_group))
-xScale1.domain(['low income', 'high income']).range([0, xScale0.bandwidth()])
-yScale.domain([0, d3.max(models, d => d.low_income > d.high_income ? d.low_income : d.high_income)])
+// var yAxis = d3.axisLeft(yScale).ticks(axisTicks.qty).tickSizeOuter(axisTicks.outerSize);
 
 
-var cctblURL = "/commoditycons";
+// xScale0.domain(models.map(d => d.food_group))
+// xScale1.domain(['low income', 'high income']).range([0, xScale0.bandwidth()])
+// yScale.domain([0, d3.max(models, d => d.low_income > d.high_income ? d.low_income : d.high_income)])
 
 
-d3.json(cctblURL).then(function(d) {
-  // Grab values from the response json object to build the plots
-  var foodGroup = d['Food Group'];
-  var low_income = d['li_2007-08'];
-  var high_income = d['hi_2007-08'];
+var cctblURL = "../static/data/CC_mongodb.json";
+
+var group_table = [];
+
+d3.csv(cctblURL, function(group_data) {
+  console.log(group_data)
+    // Format the data
+   //new food security data
+    function food_cons(food_group, total) {
+      this.food_group = food_group
+      this.total = total
+    }
+    //console.log(secu_data)
+    var food_group = group_data['Food Group'].map(food_group => {
+      return food_group
+    })
+  
+    var total = food_data.Total.map(total => {
+      return total
+    });
+    console.log(food_group)
+    // console.log(income)
+  
+    states.forEach((state, i) => {
+      new_cons.push(new state_secu(state, rank[i]))
+    });
+
+
+
 
   var food_group = svg.selectAll(".food_group")
   .data(models)
@@ -436,5 +521,4 @@ chartGroup.on("mouseover", function(data) {
   .on("mouseout", function(data, index) {
     toolTip.hide(data);
   });
-
 });
