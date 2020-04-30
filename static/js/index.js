@@ -9,7 +9,7 @@ var income2 = [];
 var state2 = [];
 
 d3.json(medIncome, function(data){
-console.log(data[0].State)
+//console.log(data[0].State)
     function state(state) {
           this.state = state
           //this.income = income
@@ -35,7 +35,7 @@ console.log(data[0].State)
         // } 
 
 var stateInit = [ 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ];
-console.log(stateInit.length)
+//console.log(stateInit.length)
   
 
 var barbody = d3.select("#map1")
@@ -43,7 +43,7 @@ var intIncome = [];
 for (var i=0; i<income2.length; i++) {
     intIncome.push(parseInt(income2[i]))
 }
-console.log(intIncome)
+//console.log(intIncome)
 
 var data = [{
     type: "choroplethmapbox", name: "Median Income", locations: stateInit, z: intIncome,
@@ -68,7 +68,7 @@ var consume = [];
 var state3 = [];
 
 d3.json(foodConsURL, function(data){
-console.log(data[0].State)
+//console.log(data[0].State)
     function state(state) {
           this.state = state
           //this.income = income
@@ -83,7 +83,7 @@ console.log(data[0].State)
         });
 
 var stateInit = [ 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ];
-console.log(consume.length)
+//console.log(consume.length)
   
 
 var barbody = d3.select("#map2")
@@ -117,7 +117,7 @@ var consume = [];
 var state3 = [];
 
 d3.json(foodtable, function(data){
-console.log(data[0].State)
+//console.log(data[0].State)
     function state(state) {
           this.state = state
           //this.income = income
@@ -132,7 +132,7 @@ console.log(data[0].State)
         });
 
 var stateInit = [ 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ];
-console.log(consume.length)
+//console.log(consume.length)
   
 
 var barbody = d3.select("#map3")
