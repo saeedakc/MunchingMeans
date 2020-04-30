@@ -21,11 +21,6 @@ Food Table: https://gtatldatapt12-gde6202.slack.com/files/UQRF82EDV/F011M519M35/
 
 Median Income Spreadsheet: https://gtatldatapt12-gde6202.slack.com/files/UQRF82EDV/F011WTCRNPK/median_income_by_state.xls
 
-BONUS → Atlas Data on Food Accessibility Research: https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/
-
-BONUS → Atlas DataSet: https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data/
-
-
 
 # Possible D3.js libraries:
 
