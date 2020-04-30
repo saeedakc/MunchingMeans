@@ -9,7 +9,8 @@ Chelsea | chtho3 | Thompson
 Proposal:
 Hypothesis: There is a correlation between the consumption of healthy foods and the average income level of households across the United States. 
 
-US Choropleth with updating layers based on user-click of one of the overlays. Each layer ranks the states by one of three factors: Median Income, Food Security, and Vegetable Consumption. Income data was pulled from the US Census; Food Security was pulled from the US Department of Agriculture; Vegetable Consumption survey was referenced from data compiled by America's Health Rankings (.org), a project from the United Health Foundation. By measuring household income by commodity consumption we can gather a sound conclusion to either reject or accept our hypothesis. 
+Our reasearch exams this correlation by analyzing the relationship between consumption, food types, and income levels.
+US Choropleth layers update based on user mouse-over of one of the overlays. Each layer ranks the states by one of three factors: Median Income, Food Security, and Vegetable Consumption. Income data was pulled from the US Census; Food Security was pulled from the US Department of Agriculture; Vegetable Consumption survey was referenced from data compiled by America's Health Rankings (.org), a project from the United Health Foundation. By measuring household income by commodity consumption we can gather a sound conclusion to either reject or accept our hypothesis. 
 
 
 # Links to Our Data Sets:
@@ -28,12 +29,9 @@ BONUS → Atlas DataSet: https://www.ers.usda.gov/data-products/food-access-rese
 
 # Possible D3.js libraries:
 
-https://observablehq.com/@d3/diverging-stacked-bar-chart Diverging Stacked Bar Charts to show relationships between food groups.
-
-https://observablehq.com/@d3/radial-stacked-bar-chart Radial Bar Chart to show specific food type consumption (versus some static category, like income?)
-
 https://observablehq.com/@d3/bivariate-choropleth Bivariate Chloropleth to show relationship between two conditions (income on one axis and obesity? Nutrition? On the other)
 
+https://plotly.com/python/mapbox-county-choropleth/
 
 
 # Sources of Inspiration:
