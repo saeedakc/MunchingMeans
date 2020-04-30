@@ -1,49 +1,80 @@
-// Connect to Flask route
-var foodtableURL = "/foodAvail";
-// var foodtableA = data[0][Food_group]
-// var foodtableB = data[1][Total]
+//--------------------------------------------------------------
+// Bar Chart
+//--------------------------------------------------------------
 
-d3.json(foodtableURL, function(data) {
-  console.log(data[0])
 
-  var foodtableA = data[0]['Food group'];
-  var foodtableB = data[0].Total;
 
-  console.log(foodtableA)
-  console.log(foodtableB)
+// Define SVG area dimensions
+var svgWidth = 500;
+var svgHeight = 350;
 
-var barbody = d3.select("#vis")
+// Define the chart's margins as an object
+var chartMargin = {
+  top: 30,
+  right: 30,
+  bottom: 30,
+  left: 30
+};
 
-// Emoji chart code
-var food_table = {
-  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
-  "config": {"view": {"stroke": ""}},
-  "width": barbody.innerwidth,
-  "height": barbody.innerheight,
-  "data": {
-    "values": [
-      {"country":'Fruits Low', "animal": 'Fruits Low'},
-      {"country":foodtableA[1], "animal": foodtableB[1]}
+// Define dimensions of the chart area
+var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
+var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
-      // {foodtableB}
-    ]
-  },
-  "transform": [
-    {
-      "calculate": "{'Fruits Low': '🥥', 'Fruits High': '🍇', 'Veggies Low': '🧅', 'Veggies High': '🥗', 'Dairy Low': '🥛', 'Dairy High': '🍦', 'Grains Low': '🍣', 'Grains High': '🍚', 'Protein Low': '🍖', 'Protein High': '🥩', 'Oils Low': '🧈', 'Oils High': '🥣', 'Fats Low': '🍰', 'Fats High': '🎂'}[datum.foodtableB]",
-      "as": "emoji"
-    },
-    {"window": [{"op": "rank", "as": "rank"}], "groupby": ["country", "animal"]}
-  ],
-  "mark": {"type": "text", "baseline": "middle"},
-  "encoding": {
-    "x": {"field": "rank", "type": "ordinal", "axis": null},
-    "y": {"field": "animal", "type": "nominal", "axis": null, "sort": null},
-    "row": {"field": "country", "type": "nominal", "header": {"title": ""}},
-    "text": {"field": "emoji", "type": "nominal"},
-    "size": {"value": 65}
-  }
-}
-vegaEmbed('#vis', food_table);
+// Select body, append SVG area to it, and set the dimensions
+var svg = d3.select("#barFoodCon")
+  .append("svg")
+  .attr("height", svgHeight)
+  .attr("width", svgWidth);
+
+// Append a group to the SVG area and shift ('translate') it to the right and to the bottom
+var chartGroup = svg.append("g")
+  .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
+
+// Load data from hours-of-tv-watched.csv
+d3.csv("../static/data/foodavail.csv", function(tvData) {
+
+  console.log(tvData);
+
+  // Cast the hours value to a number for each piece of tvData
+  tvData.forEach(function(d) {
+    d.Total = +d.Total;
+  });
+
+  // Configure a band scale for the horizontal axis with a padding of 0.1 (10%)
+  var xBandScale = d3.scaleBand()
+    .domain(tvData.map(d => d.Food))
+    .range([0, chartWidth])
+    .padding(0.1);
+
+  // Create a linear scale for the vertical axis.
+  var yLinearScale = d3.scaleLinear()
+    .domain([0, d3.max(tvData, d => d.Total)])
+    .range([chartHeight, 0]);
+
+  // Create two new functions passing our scales in as arguments
+  // These will be used to create the chart's axes
+  var bottomAxis = d3.axisBottom(xBandScale);
+  var leftAxis = d3.axisLeft(yLinearScale).ticks(10);
+
+  // Append two SVG group elements to the chartGroup area,
+  // and create the bottom and left axes inside of them
+  chartGroup.append("g")
+    .call(leftAxis);
+
+  chartGroup.append("g")
+    .attr("transform", `translate(0, ${chartHeight})`)
+    .call(bottomAxis);
+
+  // Create one SVG rectangle per piece of tvData
+  // Use the linear and band scales to position each rectangle within the chart
+  chartGroup.selectAll(".bar")
+    .data(tvData)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", d => xBandScale(d.Food))
+    .attr("y", d => yLinearScale(d.Total))
+    .attr("width", xBandScale.bandwidth())
+    .attr("height", d => chartHeight - yLinearScale(d.Total));
 
 });
