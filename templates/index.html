@@ -3,12 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-
   <title>MunchingMeans</title>
 
-  <!-- Favicon Icon -->
-  <link rel="shortcut icon" type="image/png" href="/favicon.png">
-
+ 
   <!-- Our CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -17,7 +14,7 @@
 </head>
 
 <body>
-  <div class="view" style="background-image: url('https://www.netclipart.com/pp/m/116-1169784_exercise-clipart-health-wealth-healthy-body.png'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+  <div class="view" style="background-image: url('https://images.unsplash.com/photo-1583174940621-dae11c7d4f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60.png'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
 
     <!-- Our Title -->
     <div class="container">
@@ -63,45 +60,26 @@
     </div>
     </div> 
 
-    <div class="row">
-    <div class="col-md-6">
-      <div class="barchart"></div>
-        <h3>Bar Chart of Food Consumption</h3>
-        <hr>
-        <p>The above chart shows the results of a study by the USDA that tracks the supply of food available for consumption in the United States and examines 
-          consumer food preferences by consumers’ census-gathered fingerprint.</p>
-        <p>From this extensive dataset, we wanted to get a feeling for how certain "healthy" food groups compare to one another in terms of consumption. This 
-          provides further context for the above Vegetable Consumption ranking map, by which we might be able to extrapolate the consumption of other necessary
-          food groups. We chose to display Vegetables' ranking on the map because of the consistently low consumption of this food group compared to other food groups.
-        </p>
-    </div>
-
-    <div class="col-md-6">
-      <div class="lowVhigh"></div>
-        <h3>Grouped Comparison of Food Consumption vs Income</h3>
-        <hr>
-        <p>Data gathered from USDA and Census data in the USDA's ERS study project.</p>
-        <p>In this grouped bar chart, we wanted to compare the Food Consumption rank by income level, split into low versus high income. We feel this chart gives direct
-          comparison to our hypothesis on a national level, that lower income potentially leads to unhealthy food consumption habits.
-        </p>
-    </div>
-    </div>
-
-    <!-- Vega Lite Table -->
-    <div id="vis"></div>
+<div>
+  <div class="container">
+    <div class="barFoodCon">
+    <h3>Bar Chart of Food Consumption</h3>
+          <hr>
+          <p>The above chart shows the results of a study by the USDA that tracks the supply of food available for consumption in the United States and examines 
+            consumer food preferences by consumers’ census-gathered fingerprint.</p>
+          <p>From this extensive dataset, we wanted to get a feeling for how certain "healthy" food groups compare to one another in terms of consumption. This 
+            provides further context for the above Vegetable Consumption ranking map, by which we might be able to extrapolate the consumption of other necessary
+            food groups. We chose to display Vegetables' ranking on the map because of the consistently low consumption of this food group compared to other food groups.
+          </p>
+      </div>
 
     <!-- D3 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
 
     <!-- API key -->
     <script type="text/javascript" src="../static/js/config.js"></script>
-    <!-- Vega Lite-->
-    <script src="https://cdn.jsdelivr.net/npm/vega@5.10.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.11.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.6.0"></script>
     <!-- Our JavaScript -->
     <script type="text/javascript" src="../static/js/index.js"></script>
-    <script type="text/javascript" src="../static/js/app2.js"></script>
   </div>
 </body>
 
