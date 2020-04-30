@@ -7,10 +7,9 @@ Enjoli | enjbaez | Baez
 Chelsea | chtho3 | Thompson
 
 Proposal:
-Hypothesis: There is a correlation between the consumption of healthy foods and the income level of households across the United States. 
+Hypothesis: There is a correlation between the consumption of healthy foods and the average income level of households across the United States. 
 
-We will determine this correlation by analyzing the relationship between consumption, food type, and income levels. We will generate an interactive map that allows the user to select various objects such as different food types and income levels and in return, will display the consumption. We will showcase a map that displays the distance between low-income households and their accessibility to grocery stores within a given area. In addition, by measuring household income by commodity consumption we can gather a sound conclusion to either reject or accept our hypothesis. 
-
+US Choropleth with updating layers based on user-click of one of the overlays. Each layer ranks the states by one of three factors: Median Income, Food Security, and Vegetable Consumption. Income data was pulled from the US Census; Food Security was pulled from the US Department of Agriculture; Vegetable Consumption survey was referenced from data compiled by America's Health Rankings (.org), a project from the United Health Foundation. By measuring household income by commodity consumption we can gather a sound conclusion to either reject or accept our hypothesis. 
 
 
 # Links to Our Data Sets:
