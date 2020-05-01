@@ -26,6 +26,10 @@ Median Income Spreadsheet: https://gtatldatapt12-gde6202.slack.com/files/UQRF82E
 https://plotly.com/python/mapbox-county-choropleth/
 
 
+# Heroku Deployment:
+https://munching-means.herokuapp.com/
+
+
 # Sources of Inspiration:
 
 https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/ (Income and access to grocery stores)
